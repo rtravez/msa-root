@@ -1,0 +1,13 @@
+docker build -t msa-service:latest .
+docker network create cloud-sofka
+docker images
+docker image ls
+docker run -P --name msa-service --network cloud-sofka msa-service:latest
+docker container ls
+docker container --help
+docker ps
+docker ps -a
+docker logs -f msa-service
+
+docker tag msa-service:latest rtravez/msa-service:latest
+docker push rtravez/msa-service:latest

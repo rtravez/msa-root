@@ -1,0 +1,38 @@
+services:
+  service-postgres-server:
+    image: rtravez/service-postgres-server:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - cloud-sofka
+    environment:
+      POSTGRES_DB: db_test
+      POSTGRES_PASSWORD: admin
+  msc-service:
+    image: rtravez/msc-service:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - springdata:/tmp
+    restart: always
+    networks:
+      - cloud-sofka
+  msa-service:
+    image: rtravez/msa-service:latest
+    ports:
+      - "1987:1987"
+    volumes:
+      - springdata:/tmp
+    restart: always
+    networks:
+      - cloud-sofka
+    depends_on:
+      - msc-service
+networks:
+  cloud-sofka:
+volumes:
+  pgdata:
+  springdata:

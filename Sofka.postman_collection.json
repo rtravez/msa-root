@@ -1,0 +1,748 @@
+{
+  "info": {
+    "_postman_id": "c792add3-314b-4924-bbf6-ad4febffa88a",
+    "name": "Sofka",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "11756592"
+  },
+  "item": [
+    {
+      "name": "msc",
+      "item": [
+        {
+          "name": "Find customer by identification",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"identification\": \"1717172631\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mscServices/api/customers/findCustomerByIdentification",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mscServices",
+                "api",
+                "customers",
+                "findCustomerByIdentification"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mscServices/api/customers",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mscServices",
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    /*\"identification\": \"1717172632\",\r\n    \"username\": \"jlema\",\r\n    \"password\": \"123456\",\r\n    \"name\": \"Jose\",\r\n    \"lastname\": \"Lema\",\r\n    \"address\": \"Otavalo sn y principal\",\r\n    \"telephone\": \"098254785\"*/\r\n\r\n    /*\"identification\": \"1717172633\",\r\n    \"username\": \"mmontalvo\",\r\n    \"password\": \"123456\",\r\n    \"name\": \"Marianela\",\r\n    \"lastname\": \"Montalvo\",\r\n    \"address\": \"Amazonas y NNUU\",\r\n    \"telephone\": \"097548965\"*/\r\n\r\n    \"identification\": \"1717172634\",\r\n    \"username\": \"josorio\",\r\n    \"password\": \"123456\",\r\n    \"name\": \"Juan\",\r\n    \"lastname\": \"Osorio\",\r\n    \"address\": \"13 junio y Equinoccial\",\r\n    \"telephone\": \"098874587\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mscServices/api/customers",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mscServices",
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"identification\": \"1717172633\",\r\n    \"username\": \"rtravez\",\r\n    \"password\": \"00000000\",\r\n    \"name\": \"René M.\",\r\n    \"lastname\": \"Trávez V.\",\r\n    \"address\": \"La Florida\",\r\n    \"telephone\": \"9999999999\",\r\n    \"status\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mscServices/api/customers",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mscServices",
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mscServices/api/customers/2",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mscServices",
+                "api",
+                "customers",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "msa",
+      "item": [
+        {
+          "name": "Find account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/accounts",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    /*\"accountNumber\": 478758,\r\n    \"accountType\": \"AHORRO\",\r\n    \"initialBalance\": 2000,\r\n    \"identification\": \"1717172632\"*/\r\n\r\n    /*\"accountNumber\": 225487,\r\n    \"accountType\": \"CORRIENTE\",\r\n    \"initialBalance\": 100,\r\n    \"identification\": \"1717172633\"*/\r\n\r\n    /*\"accountNumber\": 495878,\r\n    \"accountType\": \"AHORRO\",\r\n    \"initialBalance\": 0,\r\n    \"identification\": \"1717172634\"*/\r\n\r\n    /*\"accountNumber\": 496825,\r\n    \"accountType\": \"AHORRO\",\r\n    \"initialBalance\": 540,\r\n    \"identification\": \"1717172633\"*/\r\n\r\n    \"accountNumber\": 585545,\r\n    \"accountType\": \"CORRIENTE\",\r\n    \"initialBalance\": 1000,\r\n    \"identification\": \"1717172632\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/accounts",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"identification\": \"1717172637\",\r\n    \"accountNumber\": 11111111111,\r\n    \"accountType\": \"AHORRO\",\r\n    \"initialBalance\": 3000,\r\n    \"status\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/accounts",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/accounts/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "accounts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save movement",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    /*\"accountNumber\": 478758,\r\n    \"movementType\": \"R\",\r\n    \"value\": -575*/\r\n\r\n    /*\"accountNumber\": 225487,\r\n    \"movementType\": \"D\",\r\n    \"value\": 600*/\r\n\r\n    /*\"accountNumber\": 495878,\r\n    \"movementType\": \"D\",\r\n    \"value\": 150*/\r\n\r\n    \"accountNumber\": 496825,\r\n    \"movementType\": \"R\",\r\n    \"value\": -540\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/movements",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "movements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find movements",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/msaServices/api/reports?initialDate=2026-07-01&finalDate=2026-07-30&identification=1717172633&accountType=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "msaServices",
+                "api",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "initialDate",
+                  "value": "2026-07-01"
+                },
+                {
+                  "key": "finalDate",
+                  "value": "2026-07-30"
+                },
+                {
+                  "key": "identification",
+                  "value": "1717172633"
+                },
+                {
+                  "key": "accountType",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete movement",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "postman.setGlobalVariable(\"creationDate\",Date.parse(new Date(\"2022-10-29 00:00:00\")));"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/mcmServices/api/movements/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "mcmServices",
+                "api",
+                "movements",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Iniciar oauth",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);",
+              "pm.globals.set(\"TKEN\", jsonData.access_token);",
+              "pm.environment.set(\"TKEN\", jsonData.access_token)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "sofka-web",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "sofka-web",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "12345",
+              "type": "text"
+            },
+            {
+              "key": "grant_type",
+              "value": "password",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/mscServices/oauth/token",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "mscServices",
+            "oauth",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{TKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          "postman.setGlobalVariable(\"initialDate\",Date.parse(new Date(\"2024-01-01 00:00:00\")));\r",
+          "postman.setGlobalVariable(\"finalDate\",Date.parse(new Date(\"2024-07-13 00:00:00\")));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "localhosthost8080",
+      "value": ""
+    },
+    {
+      "key": "TKEN",
+      "value": ""
+    },
+    {
+      "key": "localhost1987",
+      "value": ""
+    }
+  ]
+}

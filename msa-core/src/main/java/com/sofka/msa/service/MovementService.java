@@ -1,0 +1,167 @@
+package com.sofka.msa.service;
+
+import com.sofka.msa.dto.request.MovementRequest;
+import com.sofka.msa.dto.response.MovementReportResponse;
+import com.sofka.msa.dto.response.MovementResponse;
+import com.sofka.msa.entity.AccountEntity;
+import com.sofka.msa.entity.MovementEntity;
+import com.sofka.msa.exception.ExceptionManager;
+import com.sofka.msa.repository.IMovementRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static com.sofka.msa.common.Constants.CREATION_HOST;
+import static com.sofka.msa.common.Constants.CREATION_USER;
+
+/**
+ * <b> Description de la class, interface o enumeration. </b>
+ *
+ * @author renetravez
+ * @version $1.0$
+ */
+@Service
+@Slf4j
+public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository> implements IMovementService {
+
+    @Autowired
+    private IAccountService accountService;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public MovementService(IMovementRepository repository) {
+        super(repository);
+    }
+
+    /**
+     * Find last movement
+     *
+     * @param account
+     * @return
+     */
+    private BigDecimal getAvailableBalance(AccountEntity account) {
+        return repository.findLastMovement(account).map(MovementEntity::getAvailableBalance).orElse(BigDecimal.ZERO);
+    }
+
+    /**
+     * Save movement
+     *
+     * @param request
+     * @param account
+     * @return
+     */
+    private MovementEntity createMovement(MovementRequest request, AccountEntity account) {
+        BigDecimal availableBalance = getAvailableBalance(account);
+        MovementEntity movement = modelMapper.map(request, MovementEntity.class);
+
+        BigDecimal newBalance = request.getValue().doubleValue() > 0 ? availableBalance.add(request.getValue()) : availableBalance.subtract(request.getValue().abs());
+        movement.setAvailableBalance(newBalance);
+        movement.setAccount(null);
+        movement.setAccountId(account.getAccountId());
+        movement.setCreationUser(CREATION_USER);
+        movement.setCreationHost(CREATION_HOST);
+        movement.setCreationDate(Date.from(Instant.now()));
+        movement.setMovementDate(Date.from(Instant.now()));
+
+        return movement;
+    }
+
+    /**
+     * MovementResponse
+     *
+     * @param movement
+     * @return
+     */
+    private MovementResponse buildMomentResponse(MovementEntity movement) {
+        return MovementResponse.builder()
+                .movementId(movement.getMovementId())
+                .accountId(movement.getAccountId())
+                .movementDate(movement.getMovementDate())
+                .movementType(movement.getMovementType())
+                .value(movement.getValue())
+                .availableBalance(movement.getAvailableBalance())
+                .build();
+    }
+
+    /**
+     * Validate balance available
+     * @param account
+     * @param value
+     * @throws ExceptionManager.BalanceNotAvailableException
+     */
+    private void validateSufficientBalance(AccountEntity account, BigDecimal value) throws ExceptionManager.BalanceNotAvailableException {
+        BigDecimal availableBalance = getAvailableBalance(account);
+        if (value.signum() < 0 && value.abs().compareTo(availableBalance) > 0) {
+            throw new ExceptionManager.BalanceNotAvailableException("Saldo no disponible");
+        }
+    }
+
+    @Override
+    @Transactional
+    public MovementResponse processSaveMovement(MovementRequest request) throws ExceptionManager {
+        try {
+            Optional<AccountEntity> account = accountService.findAccountByAccountNumber(request);
+
+            if (account.isPresent()) {
+                validateSufficientBalance(account.get(), request.getValue());
+                MovementEntity movement = createMovement(request, account.get());
+                repository.save(movement);
+                return buildMomentResponse(movement);
+            }
+            return null;
+        } catch (ExceptionManager.BalanceNotAvailableException e) {
+            log.error("processSaveMovement: {0}", e);
+            throw new ExceptionManager.BalanceNotAvailableException("Saldo no disponible");
+        } catch (ExceptionManager e) {
+            log.error("processSaveMovement: {0}", e);
+            throw new ExceptionManager.GettingException("Error al guardar el registro");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager {
+        try {
+            return repository.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
+        } catch (Exception e) {
+            log.error("findMovementByDateAndIdentification: ", e);
+            throw new ExceptionManager.FindingException("Error al buscar los registros");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean findMovementByAccountId(Long accountId) throws ExceptionManager {
+        try {
+            return repository.findMovementByAccountId(accountId);
+        } catch (Exception e) {
+            log.error("findMovementByAccountId: ", e);
+            throw new ExceptionManager.FindingException("Error al buscar el registro");
+        }
+    }
+
+    @Override
+    @Transactional
+    public int deleteMovementById(Long id) throws ExceptionManager {
+        try {
+            Optional<MovementEntity> movement = repository.findById(id);
+
+            if (movement.isPresent()) {
+                repository.deleteById(movement.get().getMovementId());
+                return 1;
+            }
+            return 0;
+        } catch (ExceptionManager e) {
+            log.error("deleteMovementById: {0}", e);
+            throw new ExceptionManager.DeletingException("Error al eliminar el registro");
+        }
+    }
+}
