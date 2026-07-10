@@ -8,8 +8,8 @@ package com.sofka.msa.util;
  */
 public final class EnvironmentUtil {
 
-    //public static final String DOMAIN_LOCAL_HOST = "http://localhost:8080";
-    public static final String DOMAIN_LOCAL_HOST = "http://msc-service:8080";
+    public static final String DOMAIN_LOCAL_HOST = "http://localhost:8080";
+    // public static final String DOMAIN_LOCAL_HOST = "http://msc-service:8080";
 
     private EnvironmentUtil() {
     }
