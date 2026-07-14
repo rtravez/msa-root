@@ -3,7 +3,7 @@ package com.sofka.msa.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * MsaConfiguration spring configuration.
@@ -22,7 +22,7 @@ public class MsaConfiguration {
     }
 
     @Bean
-    public RestTemplate restTemplateMcpServices() {
-        return new RestTemplate();
+    public WebClient webClientMcpServices() {
+        return WebClient.builder().build();
     }
 }
