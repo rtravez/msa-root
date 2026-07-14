@@ -5,20 +5,13 @@ import com.sofka.msa.dto.request.AccountRequest;
 import com.sofka.msa.dto.response.AccountResponse;
 import com.sofka.msa.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,10 +20,10 @@ import java.util.List;
 @RequestMapping("/api/accounts")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class AccountController {
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
     /**
      * Find account all

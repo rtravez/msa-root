@@ -5,18 +5,13 @@ import com.sofka.msa.dto.request.MovementRequest;
 import com.sofka.msa.dto.response.MovementResponse;
 import com.sofka.msa.service.IMovementService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,10 +19,10 @@ import javax.validation.Valid;
 @RequestMapping("/api/movements")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class MovementController {
 
-    @Autowired
-    private IMovementService movementService;
+    private final IMovementService movementService;
 
 
     /**
