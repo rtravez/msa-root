@@ -3,7 +3,6 @@ package com.sofka.msa.controller;
 import com.sofka.msa.dto.BaseResponseDto;
 import com.sofka.msa.dto.request.AccountRequest;
 import com.sofka.msa.dto.response.AccountResponse;
-import com.sofka.msa.exception.ExceptionManager;
 import com.sofka.msa.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -41,18 +40,12 @@ public class AccountController {
     @GetMapping
     @Operation(summary = "Find account")
     public ResponseEntity<BaseResponseDto<Object>> findAccountAll() {
-        try {
-
-            List<AccountResponse> accountResponses = accountService.findAccountAll();
-            if (accountResponses.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("No existen cuentas").build());
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(accountResponses).message("Cuentas encontradas con \u00E9xito").build());
-        } catch (ExceptionManager e) {
-            log.error("findAccountAll", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
+        List<AccountResponse> accountResponses = accountService.findAccountAll();
+        if (accountResponses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("No existen cuentas").build());
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(accountResponses).message("Cuentas encontradas con \u00E9xito").build());
     }
 
 
@@ -66,20 +59,15 @@ public class AccountController {
     @PostMapping
     @Operation(summary = "Create account")
     public ResponseEntity<BaseResponseDto<Object>> save(@Valid @RequestBody AccountRequest request) {
-        try {
-            if (Boolean.TRUE.equals(this.accountService.exist(request.getAccountNumber()))) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta ya existe").build());
-            }
-
-            AccountResponse response = accountService.processSaveAccount(request);
-            if (response == null) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Cuenta creada con \u00E9xito").build());
-        } catch (ExceptionManager e) {
-            log.error("save: {0}", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
+        if (Boolean.TRUE.equals(this.accountService.exist(request.getAccountNumber()))) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta ya existe").build());
         }
+
+        AccountResponse response = accountService.processSaveAccount(request);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Cuenta creada con \u00E9xito").build());
     }
 
     /**
@@ -92,17 +80,12 @@ public class AccountController {
     @PutMapping
     @Operation(summary = "Update account")
     public ResponseEntity<BaseResponseDto<Object>> update(@Valid @RequestBody AccountRequest request) {
-        try {
-            AccountResponse response = accountService.processUpdateAccount(request);
-            if (response == null) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(response).message("Cuenta actualizada con \u00E9xito").build());
-        } catch (ExceptionManager e) {
-            log.error("update: {0}", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
+        AccountResponse response = accountService.processUpdateAccount(request);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(response).message("Cuenta actualizada con \u00E9xito").build());
     }
 
     /**
@@ -115,17 +98,10 @@ public class AccountController {
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "Delete account")
     public ResponseEntity<BaseResponseDto<Object>> deleteById(@PathVariable Long id) {
-        try {
-            if (this.accountService.deleteAccountById(id) >= 1) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Cuenta eliminada con \u00E9xito").build());
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
-            }
-        } catch (ExceptionManager.ForeignException f) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("Existen movimientos para esta cuenta").build());
-        } catch (ExceptionManager e) {
-            log.error("deleteById", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
+        if (this.accountService.deleteAccountById(id) >= 1) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Cuenta eliminada con \u00E9xito").build());
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
         }
     }
 }

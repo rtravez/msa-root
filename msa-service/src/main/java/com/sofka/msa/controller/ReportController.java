@@ -2,7 +2,6 @@ package com.sofka.msa.controller;
 
 import com.sofka.msa.dto.BaseResponseDto;
 import com.sofka.msa.dto.response.MovementReportResponse;
-import com.sofka.msa.exception.ExceptionManager;
 import com.sofka.msa.service.IMovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -42,17 +41,12 @@ public class ReportController {
                                                                                        @RequestParam("finalDate") String finalDate,
                                                                                        @RequestParam("identification") String identification,
                                                                                        @RequestParam("accountType") String accountType) {
-        try {
-            List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
-            if (responses.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("No existen movimientos").build());
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(responses).message("Movimientos encontrados con \u00E9xito").build());
-        } catch (ExceptionManager e) {
-            log.error("findMovementByDateAndIdentification", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
+        List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
+        if (responses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("No existen movimientos").build());
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(responses).message("Movimientos encontrados con \u00E9xito").build());
     }
 
 }

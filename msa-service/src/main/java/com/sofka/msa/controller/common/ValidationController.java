@@ -1,7 +1,6 @@
 package com.sofka.msa.controller.common;
 
 import com.sofka.msa.dto.BaseResponseDto;
-import com.sofka.msa.exception.ExceptionManager;
 import com.sofka.msa.service.common.IValidationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +23,14 @@ public class ValidationController {
 
 	@GetMapping(path = "identification/{identification}")
 	public ResponseEntity<BaseResponseDto<Object>> validationIdentification(@PathVariable String identification) {
-		try {
-			return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value())
-					.data(service.validationIdentification(identification)).message("La identificación ha sido validado con \u00E9xito").build());
-		} catch (ExceptionManager e) {
-			log.error("validationIdentification", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value())
+				.data(service.validationIdentification(identification)).message("La identificación ha sido validado con \u00E9xito").build());
 	}
 
 	@GetMapping(path = "ruc/{ruc}")
 	public ResponseEntity<BaseResponseDto<Object>> validationRuc(@PathVariable String ruc) {
-		try {
-			return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(service.validationRuc(ruc))
-					.message("El ruc ha sido validado con \u00E9xito").build());
-		} catch (ExceptionManager e) {
-			log.error("validationRuc", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(BaseResponseDto.builder().message(e.getMessage()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(service.validationRuc(ruc))
+				.message("El ruc ha sido validado con \u00E9xito").build());
 	}
 
 }
