@@ -7,7 +7,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: always
     networks:
-      - cloud-sofka
+      - cloud-rtravez
     environment:
       POSTGRES_DB: db_test
       POSTGRES_PASSWORD: admin
@@ -19,7 +19,7 @@ services:
       - springdata:/tmp
     restart: always
     networks:
-      - cloud-sofka
+      - cloud-rtravez
   msa-service:
     image: rtravez/msa-service:latest
     ports:
@@ -28,11 +28,11 @@ services:
       - springdata:/tmp
     restart: always
     networks:
-      - cloud-sofka
+      - cloud-rtravez
     depends_on:
       - msc-service
 networks:
-  cloud-sofka:
+  cloud-rtravez:
 volumes:
   pgdata:
   springdata:
