@@ -29,8 +29,8 @@ public class ResourceServerConfig {
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/accounts", "/api/accounts/{id}", "/api/accounts/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/{id}", "/api/reports/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/accounts", "/api/accounts/{id}", "/api/accounts/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/{id}", "/api/reports/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -31,6 +31,7 @@ public class AccountController {
      * @return
      */
     @GetMapping
+    @Secured({"ROLE_ADMIN"})
     @Operation(summary = "Find account")
     public ResponseEntity<BaseResponseDto<Object>> findAccountAll() {
         List<AccountResponse> accountResponses = accountService.findAccountAll();
