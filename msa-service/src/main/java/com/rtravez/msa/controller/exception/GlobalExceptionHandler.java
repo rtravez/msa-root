@@ -50,6 +50,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+        @ExceptionHandler(ExceptionManager.ServiceUnavailableException.class)
+        public ResponseEntity<BaseResponseDto<Object>> handleServiceUnavailableException(
+                        ExceptionManager.ServiceUnavailableException ex) {
+                log.error("Service unavailable: {}", ex.getMessage(), ex);
+                BaseResponseDto<Object> response = BaseResponseDto.builder()
+                                .code(HttpStatus.SERVICE_UNAVAILABLE.value())
+                                .message(ex.getMessage())
+                                .build();
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+        }
+
     @ExceptionHandler(ExceptionManager.class)
     public ResponseEntity<BaseResponseDto<Object>> handleExceptionManager(ExceptionManager ex) {
         log.error("ExceptionManager: {}", ex.getMessage(), ex);

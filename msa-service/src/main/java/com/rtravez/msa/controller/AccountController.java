@@ -4,7 +4,6 @@ import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -55,25 +54,20 @@ public class AccountController {
     @PostMapping
     @Operation(summary = "Create account")
     public ResponseEntity<BaseResponseDto<Object>> save(@Valid @RequestBody AccountRequest request) {
-        try {
-            if (Boolean.TRUE.equals(this.accountService.exist(request.getAccountNumber()))) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("La cuenta ya existe").build());
-            }
-
-            UserResponse userResponse = accountService.findUserByIdentification(request.getIdentification());
-            if (userResponse == null || userResponse.getUserId() == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El usuario no existe").build());
-            }
-
-            AccountResponse response = accountService.processSaveAccount(request, userResponse);
-            if (response == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Cuenta creada con \u00E9xito").build());
-        } catch (ExceptionManager.ServiceUnavailableException e) {
-            log.error("save", e);
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(BaseResponseDto.builder().code(HttpStatus.SERVICE_UNAVAILABLE.value()).message(e.getMessage()).build());
+        if (Boolean.TRUE.equals(this.accountService.exist(request.getAccountNumber()))) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("La cuenta ya existe").build());
         }
+
+        UserResponse userResponse = accountService.findUserByIdentification(request.getIdentification());
+        if (userResponse == null || userResponse.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El usuario no existe").build());
+        }
+
+        AccountResponse response = accountService.processSaveAccount(request, userResponse);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Cuenta creada con \u00E9xito").build());
     }
 
     /**
