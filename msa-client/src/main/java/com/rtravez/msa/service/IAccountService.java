@@ -27,6 +27,15 @@ public interface IAccountService extends IGenericService<AccountEntity, Long> {
     Boolean exist(Long accountNumber) throws ExceptionManager;
 
     /**
+     * Find user by identification
+     *
+     * @param identification
+     * @return true or false
+     * @throws ExceptionManager
+     */
+    Boolean existUser(String identification) throws ExceptionManager;
+
+    /**
      * Process save account
      *
      * @param request

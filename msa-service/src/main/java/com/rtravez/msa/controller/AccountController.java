@@ -57,6 +57,10 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("La cuenta ya existe").build());
         }
 
+        if (!Boolean.TRUE.equals(this.accountService.existUser(request.getIdentification()))) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El usuario no existe").build());
+        }
+
         AccountResponse response = accountService.processSaveAccount(request);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());

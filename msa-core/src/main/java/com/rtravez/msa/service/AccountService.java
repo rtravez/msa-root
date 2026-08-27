@@ -55,6 +55,12 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Boolean existUser(String identification) throws ExceptionManager {
+        return isUserResponseValid(findUserResponse(identification));
+    }
+
+    @Override
     @Transactional
     public AccountResponse processSaveAccount(AccountRequest request) throws ExceptionManager {
         try {
