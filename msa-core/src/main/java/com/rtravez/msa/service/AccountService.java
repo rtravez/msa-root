@@ -49,7 +49,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
         try {
             return repository.exist(accountNumber);
         } catch (ExceptionManager e) {
-            log.error("exist: {0}", e);
+            log.error("exist", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
     }
@@ -67,7 +67,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
             }
             return null;
         } catch (Exception e) {
-            log.error("processSaveAccount: {0}", e);
+            log.error("processSaveAccount", e);
             throw new ExceptionManager.GettingException("Error al guardar el registro");
         }
     }
@@ -190,7 +190,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
             }
             return null;
         } catch (Exception e) {
-            log.error("processUpdateAccount: {0}", e);
+            log.error("processUpdateAccount", e);
             throw new ExceptionManager.GettingException("Error al actualizar el registro");
         }
     }
@@ -240,10 +240,10 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
             }
             return 0L;
         } catch (ExceptionManager.ForeignException e) {
-            log.error("deleteAccountById: {0}", e);
+            log.error("deleteAccountById", e);
             throw new ExceptionManager.ForeignException("Existen movimientos para esta cuenta");
         } catch (ExceptionManager e) {
-            log.error("deleteAccountById: {0}", e);
+            log.error("deleteAccountById", e);
             throw new ExceptionManager.GettingException("Error al eliminar el registro");
         }
     }
@@ -266,7 +266,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
         try {
             return repository.findAccountByAccountNumber(request.getAccountNumber());
         } catch (Exception e) {
-            log.error("findAccountByAccountNumber: {0}", e);
+            log.error("findAccountByAccountNumber", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
     }

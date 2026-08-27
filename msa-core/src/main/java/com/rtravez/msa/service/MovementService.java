@@ -117,10 +117,10 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
             }
             return null;
         } catch (ExceptionManager.BalanceNotAvailableException e) {
-            log.error("processSaveMovement: {0}", e);
+            log.error("processSaveMovement", e);
             throw new ExceptionManager.BalanceNotAvailableException("Saldo no disponible");
         } catch (ExceptionManager e) {
-            log.error("processSaveMovement: {0}", e);
+            log.error("processSaveMovement", e);
             throw new ExceptionManager.GettingException("Error al guardar el registro");
         }
     }
@@ -168,7 +168,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
         } catch (ExceptionManager.MovementDeletionException e) {
             throw e;
         } catch (ExceptionManager e) {
-            log.error("deleteMovementById: {0}", e);
+            log.error("deleteMovementById", e);
             throw new ExceptionManager.DeletingException("Error al eliminar el registro");
         }
     }
