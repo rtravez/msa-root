@@ -47,7 +47,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
      * @return
      */
     private BigDecimal getAvailableBalance(AccountEntity account) {
-        return repository.findLastMovement(account).map(MovementEntity::getAvailableBalance).orElse(BigDecimal.ZERO);
+        return repository.findLastMovement(account).map(movement -> movement.getAvailableBalance()).orElse(BigDecimal.ZERO);
     }
 
     /**

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
 import java.util.Optional;
 
@@ -58,6 +59,7 @@ public class AccountRepository extends GenericRepository<AccountEntity, Long> im
 
             TypedQuery<AccountEntity> query = getEntityManager().createQuery(jpql, AccountEntity.class);
             query.setParameter("accountNumber", accountNumber);
+            query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
             AccountEntity result = query.getSingleResult();
             return Optional.ofNullable(result);
