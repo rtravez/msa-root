@@ -4,23 +4,24 @@ import com.rtravez.msa.dto.BaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PersonRequest extends BaseDto implements Serializable {
+public class PersonRequest extends BaseDto {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private Long personId;
-    @NotEmpty
+    @NotBlank
+    @Size(max = 10)
     private String identification;
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
+    @NotBlank
     private String lastname;
     private String address;
     private String telephone;

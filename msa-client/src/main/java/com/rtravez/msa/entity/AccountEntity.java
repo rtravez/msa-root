@@ -17,10 +17,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity(name = "accounts")
+@Table(name = "accounts", uniqueConstraints = {
+    @jakarta.persistence.UniqueConstraint(name = "uk_accounts_account_number", columnNames = "account_number")
+}, indexes = {
+    @jakarta.persistence.Index(name = "idx_accounts_person_id", columnList = "person_id")
+})
 @Builder
 @Getter
 @Setter
@@ -33,13 +39,13 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "account_id", unique = true, nullable = false)
     private Long accountId;
 
-    @Column(name = "account_number", nullable = false, length = 11)
+    @Column(name = "account_number", nullable = false)
     private Long accountNumber;
 
     @Column(name = "account_type", nullable = false, length = 11)
     private String accountType;
 
-    @Column(name = "initial_balance", nullable = false)
+    @Column(name = "initial_balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal initialBalance;
 
     @Column(name = "person_id", nullable = false)

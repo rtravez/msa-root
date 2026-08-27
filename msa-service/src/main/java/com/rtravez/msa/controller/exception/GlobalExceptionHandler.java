@@ -2,9 +2,12 @@ package com.rtravez.msa.controller.exception;
 
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.exception.ExceptionManager;
+
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -68,6 +71,31 @@ public class GlobalExceptionHandler {
                 .errors(errors)
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<BaseResponseDto<Object>> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.error("Constraint violation error: ", ex);
+        List<String> errors = ex.getConstraintViolations()
+                .stream()
+                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()).toList();
+
+        BaseResponseDto<Object> response = BaseResponseDto.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message("Error de validación de parámetros")
+                .errors(errors)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseResponseDto<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        log.warn("Data integrity violation", ex);
+        BaseResponseDto<Object> response = BaseResponseDto.builder()
+                .code(HttpStatus.CONFLICT.value())
+                .message("La cuenta ya existe o los datos violan una restricción de integridad")
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(Exception.class)

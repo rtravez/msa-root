@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -26,6 +27,7 @@ public class MovementRequest extends BaseDto {
     @Pattern(regexp = "[DR]", flags = Pattern.Flag.CASE_INSENSITIVE, message = "El tipo de movimiento debe ser D o R")
     private String movementType;
     @NotNull
+    @Digits(integer = 19, fraction = 2)
     private BigDecimal value;
     private BigDecimal availableBalance;
     @NotNull

@@ -1,6 +1,7 @@
 package com.rtravez.msa.dto.request;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,8 +12,10 @@ import lombok.EqualsAndHashCode;
 public class UserRequest extends PersonRequest {
 
     private Long userId;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 8, max = 60)
     private String password;
-    @NotEmpty
+    @NotBlank
+    @Size(max = 20)
     private String username;
 }

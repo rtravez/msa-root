@@ -17,11 +17,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity(name = "movements")
+@Table(name = "movements", indexes = {
+    @jakarta.persistence.Index(name = "idx_movements_account_date", columnList = "account_id, movement_date")
+})
 @Builder
 @Getter
 @Setter
@@ -41,10 +45,10 @@ public class MovementEntity extends BaseEntity {
     @Column(name = "movement_type", nullable = false, length = 1)
     private Character movementType;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false, precision = 19, scale = 2)
     private BigDecimal value;
 
-    @Column(name = "available_balance", nullable = false)
+    @Column(name = "available_balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal availableBalance;
 
     @Column(name = "account_id", nullable = false)
