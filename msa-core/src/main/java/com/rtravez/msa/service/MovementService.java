@@ -6,6 +6,7 @@ import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
+import com.rtravez.msa.repository.IAccountRepository;
 import com.rtravez.msa.repository.IMovementRepository;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
@@ -29,15 +30,15 @@ import java.util.Optional;
 @Slf4j
 public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository> implements IMovementService {
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountRepository accountRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private ClientIpProvider clientIpProvider;
 
-    public MovementService(IMovementRepository repository) {
+    public MovementService(IMovementRepository repository, IAccountRepository accountRepository) {
         super(repository);
+        this.accountRepository = accountRepository;
     }
 
     /**
@@ -106,7 +107,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
     @Transactional
     public MovementResponse processSaveMovement(MovementRequest request) throws ExceptionManager {
         try {
-            Optional<AccountEntity> account = accountService.findAccountByAccountNumber(request);
+            Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
 
             if (account.isPresent()) {
                 validateSufficientBalance(account.get(), request.getValue());
