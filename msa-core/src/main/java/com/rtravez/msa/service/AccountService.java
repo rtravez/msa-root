@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,15 +31,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AccountService extends GenericService<AccountEntity, Long, IAccountRepository> implements IAccountService {
 
-    @Autowired
-    private IDependenceService dependenceService;
-    @Autowired
-    private IMovementService movementService;
-    @Autowired
-    private ClientIpProvider clientIpProvider;
+    private final IDependenceService dependenceService;
+    private final IMovementService movementService;
+    private final ClientIpProvider clientIpProvider;
 
-    public AccountService(IAccountRepository repository) {
+    public AccountService(IAccountRepository repository,
+                          IDependenceService dependenceService,
+                          IMovementService movementService,
+                          ClientIpProvider clientIpProvider) {
         super(repository);
+        this.dependenceService = dependenceService;
+        this.movementService = movementService;
+        this.clientIpProvider = clientIpProvider;
     }
 
     @Override

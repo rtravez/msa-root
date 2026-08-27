@@ -2,7 +2,6 @@ package com.rtravez.msa.service.common;
 
 import static java.util.Objects.requireNonNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,12 +21,14 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class DependenceService implements IDependenceService {
 
-    @Autowired
-    private UrlDependenceWebServices url;
+    private final UrlDependenceWebServices url;
+    private final WebClient webClientMcpServices;
 
-    @Autowired
-    @Qualifier("webClientMcpServices")
-    private WebClient webClientMcpServices;
+    public DependenceService(UrlDependenceWebServices url,
+                            @Qualifier("webClientMcpServices") WebClient webClientMcpServices) {
+        this.url = url;
+        this.webClientMcpServices = webClientMcpServices;
+    }
 
     @Override
     public UserResponse findUserByIdentification(UserRequest request) {

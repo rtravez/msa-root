@@ -3,7 +3,6 @@ package com.rtravez.msa.controller.common;
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.service.common.IValidationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ValidationController {
 
-	@Autowired
-	private IValidationService service;
+	private final IValidationService service;
+
+	public ValidationController(IValidationService service) {
+		this.service = service;
+	}
 
 	@GetMapping(path = "identification/{identification}")
 	public ResponseEntity<BaseResponseDto<Object>> validationIdentification(@PathVariable String identification) {

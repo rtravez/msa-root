@@ -1,5 +1,8 @@
 package com.rtravez.msa.auth;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,9 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * <b> Description de la clase, interface o enumeration. </b>
  *
@@ -26,13 +26,18 @@ import java.util.List;
 @Configuration
 public class ResourceServerConfig {
 
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";   
+
     @Bean
     @Order(1)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/accounts", "/api/accounts/{id}", "/api/accounts/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/{id}", "/api/reports/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/accounts", "/api/accounts/{id}", "/api/accounts/**").hasAuthority(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/{id}", "/api/reports/**").hasAuthority(ROLE_ADMIN)
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
