@@ -17,7 +17,7 @@ public class SpringSecurityConfig {
 	@Order(2)
 	public SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/error", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+						.requestMatchers("/error", "/v3/api-docs/**", "/swagger-ui/**", "/actuator/health", "/actuator/info").permitAll()
 						.anyRequest().authenticated())
 				.csrf(AbstractHttpConfigurer::disable);
 		return http.build();
