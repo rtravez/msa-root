@@ -1,5 +1,13 @@
 package com.rtravez.msa.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.MovementReportResponse;
 import com.rtravez.msa.dto.response.MovementResponse;
@@ -10,15 +18,8 @@ import com.rtravez.msa.repository.IAccountRepository;
 import com.rtravez.msa.repository.IMovementRepository;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <b> Description de la class, interface or enumeration. </b>
@@ -31,14 +32,17 @@ import java.util.Optional;
 public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository> implements IMovementService {
 
     private final IAccountRepository accountRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ClientIpProvider clientIpProvider;
+    private final ModelMapper modelMapper;
+    private final ClientIpProvider clientIpProvider;
 
-    public MovementService(IMovementRepository repository, IAccountRepository accountRepository) {
+    protected MovementService(IMovementRepository repository,
+            IAccountRepository accountRepository,
+            ModelMapper modelMapper,
+            ClientIpProvider clientIpProvider) {
         super(repository);
         this.accountRepository = accountRepository;
+        this.modelMapper = modelMapper;
+        this.clientIpProvider = clientIpProvider;
     }
 
     /**
@@ -92,6 +96,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
 
     /**
      * Validate balance available
+     * 
      * @param account
      * @param value
      * @throws ExceptionManager.BalanceNotAvailableException
