@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.common.BaseEntity;
-import com.rtravez.msa.entity.common.RoleUserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,13 +39,7 @@ public class UserView extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String username;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<RoleUserEntity> roleUsers;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private PersonView person;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<AccountEntity> accounts;
 }

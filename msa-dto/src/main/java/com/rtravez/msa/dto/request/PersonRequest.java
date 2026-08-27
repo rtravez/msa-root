@@ -5,11 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import jakarta.validation.constraints.NotEmpty;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PersonRequest extends BaseDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long personId;

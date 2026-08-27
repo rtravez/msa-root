@@ -108,7 +108,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
                 .accountNumber(request.getAccountNumber())
                 .accountType(request.getAccountType())
                 .initialBalance(request.getInitialBalance())
-                .userId(userResponse.getUserId())
+                .personId(userResponse.getUserId())
                 .build();
 
         account.setStatus(request.getStatus());
@@ -140,7 +140,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
      */
     private AccountResponse buildAccountResponse(AccountEntity account, UserResponse userResponse) {
         return AccountResponse.builder()
-                .userId(account.getUserId())
+                .personId(account.getPersonId())
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
@@ -155,16 +155,16 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     public List<AccountResponse> findAccountAll() throws ExceptionManager {
         try {
             List<AccountResponse> accountResponses = new ArrayList<>();
-            List<AccountEntity> users = repository.findAll();
-            users.forEach(it -> accountResponses.add(AccountResponse.builder()
+            List<AccountEntity> accounts = repository.findAll();
+            accounts.forEach(it -> accountResponses.add(AccountResponse.builder()
                     .accountNumber(it.getAccountNumber())
                     .accountType(it.getAccountType())
                     .initialBalance(it.getInitialBalance())
                     .status(it.getStatus())
                     .accountId(it.getAccountId())
-                    .userId(it.getUserId())
-                    .name(it.getUser().getPerson().getName())
-                    .lastname(it.getUser().getPerson().getLastname())
+                    .personId(it.getPersonId())
+                    .name(it.getPerson().getName())
+                    .lastname(it.getPerson().getLastname())
                     .build()));
             return accountResponses;
         } catch (Exception e) {
@@ -223,7 +223,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
                 .name(userResponse.getName())
                 .lastname(userResponse.getLastname())
                 .accountId(account.getAccountId())
-                .userId(account.getUserId())
+                .personId(account.getPersonId())
                 .build();
     }
 

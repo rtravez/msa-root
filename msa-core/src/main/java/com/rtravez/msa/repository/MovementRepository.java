@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
 import static com.rtravez.msa.entity.QMovementEntity.movementEntity;
-import static com.rtravez.msa.entity.view.QUserView.userView;
+import static com.rtravez.msa.entity.view.QPersonView.personView;
 import static com.rtravez.msa.entity.view.QPersonView.personView;
 import static com.rtravez.msa.util.DateUtil.convertStringToDate;
 import static com.querydsl.core.types.Projections.bean;
@@ -73,8 +73,7 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
                             accountEntity.initialBalance, movementEntity.status, movementEntity.value,
                             movementEntity.availableBalance))
                     .innerJoin(movementEntity.account, accountEntity)
-                    .innerJoin(accountEntity.user, userView)
-                    .innerJoin(userView.person, personView)
+                    .innerJoin(accountEntity.person, personView)
                     .where(where).orderBy(movementEntity.movementDate.desc())
                     .fetch();
         } catch (Exception e) {

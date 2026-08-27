@@ -1,12 +1,11 @@
 package com.rtravez.msa.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import jakarta.validation.constraints.Size;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,15 +21,15 @@ public abstract class BaseDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Size(max = 50)
-    protected String creationHost;
+    protected String createdHost;
     @Size(max = 50)
-    protected String modificationHost;
+    protected String lastModifiedHost;
     @Size(max = 50)
-    protected String creationUser;
+    protected String createdUser;
     @Size(max = 50)
-    protected String modificationUser;
-    protected LocalDateTime creationDate;
-    protected LocalDateTime modificationDate;
+    protected String lastModifiedUser;
+    protected LocalDateTime createdDate;
+    protected LocalDateTime lastModifiedDate;
     @Builder.Default
     protected Boolean status = true;
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -11,9 +12,10 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 public class AccountResponse implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private Long accountId;
-    private Long userId;
+    private Long personId;
     private Long accountNumber;
     private String accountType;
     private BigDecimal initialBalance;

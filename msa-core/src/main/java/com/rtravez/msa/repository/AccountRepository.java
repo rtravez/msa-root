@@ -12,7 +12,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
-import static com.rtravez.msa.entity.view.QUserView.userView;
+import static com.rtravez.msa.entity.view.QPersonView.personView;
 
 @Slf4j
 @Repository
@@ -30,7 +30,7 @@ public class AccountRepository extends GenericRepository<AccountEntity, Long> im
             where.and(accountEntity.status.isTrue());
 
             JPQLQuery<Long> query = queryFactory.selectFrom(accountEntity).select(accountEntity.accountNumber)
-                    .innerJoin(accountEntity.user, userView)
+                    .innerJoin(accountEntity.person, personView)
                     .where(where);
             return query.fetchFirst() != null;
         } catch (ExceptionManager e) {

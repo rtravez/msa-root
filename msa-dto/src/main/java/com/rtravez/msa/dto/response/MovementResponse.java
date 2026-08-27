@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class MovementResponse implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long movementId;

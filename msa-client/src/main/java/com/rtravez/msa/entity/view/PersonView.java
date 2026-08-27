@@ -2,6 +2,7 @@ package com.rtravez.msa.entity.view;
 
 import java.util.List;
 
+import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.common.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -53,4 +54,7 @@ public class PersonView extends BaseEntity {
 
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
     private List<UserView> users;
+
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+    private List<AccountEntity> accounts;
 }

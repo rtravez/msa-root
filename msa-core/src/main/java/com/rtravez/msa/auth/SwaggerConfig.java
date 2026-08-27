@@ -10,7 +10,7 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI apiOpenAPI() {
-		return new OpenAPI().info(new Info().title("User Service API")
-				.description("User Service API Description").version("1.0"));
+		return new OpenAPI().info(new Info().title("Account Service API")
+				.description("Account Service API Description").version("1.0"));
 	}
 }
