@@ -153,10 +153,19 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
             Optional<MovementEntity> movement = repository.findById(id);
 
             if (movement.isPresent()) {
-                repository.deleteById(movement.get().getMovementId());
+                MovementEntity movementEntity = movement.get();
+                if (repository.hasLaterActiveMovement(movementEntity.getAccountId(), movementEntity.getMovementDate(),
+                        movementEntity.getMovementId())) {
+                    throw new ExceptionManager.MovementDeletionException(
+                            "No se puede eliminar un movimiento con movimientos posteriores");
+                }
+                movementEntity.setStatus(false);
+                repository.update(movementEntity);
                 return 1;
             }
             return 0;
+        } catch (ExceptionManager.MovementDeletionException e) {
+            throw e;
         } catch (ExceptionManager e) {
             log.error("deleteMovementById: {0}", e);
             throw new ExceptionManager.DeletingException("Error al eliminar el registro");

@@ -15,10 +15,10 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
 import static com.rtravez.msa.entity.QMovementEntity.movementEntity;
-import static com.rtravez.msa.entity.view.QPersonView.personView;
 import static com.rtravez.msa.entity.view.QPersonView.personView;
 import static com.rtravez.msa.util.DateUtil.convertStringToDate;
 import static com.querydsl.core.types.Projections.bean;
@@ -98,5 +98,25 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
 
+    }
+
+    @Override
+    public boolean hasLaterActiveMovement(Long accountId, LocalDateTime movementDate, Long movementId)
+            throws ExceptionManager {
+        try {
+            String jpql = "SELECT COUNT(a) FROM " + MovementEntity.class.getName()
+                    + " a WHERE a.accountId = :accountId AND a.status = true"
+                    + " AND (a.movementDate > :movementDate"
+                    + " OR (a.movementDate = :movementDate AND a.movementId > :movementId))";
+
+            TypedQuery<Long> query = getEntityManager().createQuery(jpql, Long.class);
+            query.setParameter("accountId", accountId);
+            query.setParameter("movementDate", movementDate);
+            query.setParameter("movementId", movementId);
+            return query.getSingleResult() > 0;
+        } catch (Exception e) {
+            log.error("hasLaterActiveMovement: ", e);
+            throw new ExceptionManager.FindingException("Error al buscar el registro");
+        }
     }
 }

@@ -36,12 +36,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(response);
     }
 
+    @ExceptionHandler(ExceptionManager.MovementDeletionException.class)
+    public ResponseEntity<BaseResponseDto<Object>> handleMovementDeletionException(
+            ExceptionManager.MovementDeletionException ex) {
+        log.warn("Movement deletion rejected: {}", ex.getMessage());
+        BaseResponseDto<Object> response = BaseResponseDto.builder()
+                .code(HttpStatus.CONFLICT.value())
+                .message("No se puede anular un movimiento con movimientos posteriores")
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     @ExceptionHandler(ExceptionManager.class)
     public ResponseEntity<BaseResponseDto<Object>> handleExceptionManager(ExceptionManager ex) {
         log.error("ExceptionManager: {}", ex.getMessage(), ex);
         BaseResponseDto<Object> response = BaseResponseDto.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(ex.getMessage())
+            .message("Ocurrió un error al procesar la solicitud")
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }

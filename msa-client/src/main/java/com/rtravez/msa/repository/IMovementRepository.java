@@ -7,6 +7,7 @@ import com.rtravez.msa.exception.ExceptionManager;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 /**
  * <b> Description de la class, interface o enumeration. </b>
@@ -21,4 +22,6 @@ public interface IMovementRepository extends IGenericRepository<MovementEntity, 
     List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager;
 
     boolean findMovementByAccountId(Long accountId) throws ExceptionManager;
+
+    boolean hasLaterActiveMovement(Long accountId, LocalDateTime movementDate, Long movementId) throws ExceptionManager;
 }

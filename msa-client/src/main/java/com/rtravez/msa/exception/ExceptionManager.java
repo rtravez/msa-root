@@ -91,4 +91,12 @@ public class ExceptionManager extends RuntimeException {
 		}
 	}
 
+	public static class MovementDeletionException extends ExceptionManager {
+		private static final long serialVersionUID = 1L;
+
+		public MovementDeletionException(String info) {
+			super(info);
+		}
+	}
+
 }
