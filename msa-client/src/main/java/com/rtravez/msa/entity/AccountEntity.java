@@ -1,7 +1,7 @@
 package com.rtravez.msa.entity;
 
 import com.rtravez.msa.entity.common.BaseEntity;
-import com.rtravez.msa.entity.view.CustomerView;
+import com.rtravez.msa.entity.view.UserView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -27,8 +26,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountEntity extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class AccountEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,12 +42,12 @@ public class AccountEntity extends BaseEntity implements Serializable {
     @Column(name = "initial_balance", nullable = false)
     private BigDecimal initialBalance;
 
-    @Column(name = "customer_id",  nullable = false)
-    private Long customerId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", insertable = false, updatable = false)
-    private CustomerView customer;
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private UserView user;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<MovementEntity> movements;

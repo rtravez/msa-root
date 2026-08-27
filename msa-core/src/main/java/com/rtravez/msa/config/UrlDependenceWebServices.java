@@ -13,5 +13,5 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "spring.urls")
 public class UrlDependenceWebServices {
-    private String findCustomerByIdentification;
+    private String findUserByIdentification;
 }

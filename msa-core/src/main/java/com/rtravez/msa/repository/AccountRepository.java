@@ -12,7 +12,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
-import static com.rtravez.msa.entity.view.QCustomerView.customerView;
+import static com.rtravez.msa.entity.view.QUserView.userView;
 
 @Slf4j
 @Repository
@@ -22,7 +22,6 @@ public class AccountRepository extends GenericRepository<AccountEntity, Long> im
         super(AccountEntity.class);
     }
 
-
     @Override
     public Boolean exist(Long accountNumber) throws ExceptionManager {
         try {
@@ -31,7 +30,7 @@ public class AccountRepository extends GenericRepository<AccountEntity, Long> im
             where.and(accountEntity.status.isTrue());
 
             JPQLQuery<Long> query = queryFactory.selectFrom(accountEntity).select(accountEntity.accountNumber)
-                    .innerJoin(accountEntity.customer, customerView)
+                    .innerJoin(accountEntity.user, userView)
                     .where(where);
             return query.fetchFirst() != null;
         } catch (ExceptionManager e) {
@@ -44,15 +43,18 @@ public class AccountRepository extends GenericRepository<AccountEntity, Long> im
     @Override
     public Optional<AccountEntity> findAccountByAccountNumber(Long accountNumber) throws ExceptionManager {
         try {
-            /*BooleanBuilder where = new BooleanBuilder();
-            where.and(accountEntity.accountNumber.eq(accountNumber));
-            where.and(accountEntity.status.isTrue());
+            /*
+             * BooleanBuilder where = new BooleanBuilder();
+             * where.and(accountEntity.accountNumber.eq(accountNumber));
+             * where.and(accountEntity.status.isTrue());
+             * 
+             * return Optional.ofNullable(queryFactory.selectFrom(accountEntity)
+             * .innerJoin(accountEntity.user, userView)
+             * .where(where).fetchFirst());
+             */
 
-            return Optional.ofNullable(queryFactory.selectFrom(accountEntity)
-                    .innerJoin(accountEntity.customer, customerView)
-                    .where(where).fetchFirst());*/
-
-            String jpql = "SELECT a FROM " + AccountEntity.class.getName() + " a WHERE a.accountNumber = :accountNumber AND a.status = true";
+            String jpql = "SELECT a FROM " + AccountEntity.class.getName()
+                    + " a WHERE a.accountNumber = :accountNumber AND a.status = true";
 
             TypedQuery<AccountEntity> query = getEntityManager().createQuery(jpql, AccountEntity.class);
             query.setParameter("accountNumber", accountNumber);

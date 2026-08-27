@@ -1,6 +1,6 @@
 package com.rtravez.msa.entity.common;
 
-import com.rtravez.msa.entity.view.CustomerView;
+import com.rtravez.msa.entity.view.UserView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,27 +15,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.io.Serializable;
 
-@Entity(name = "role_customers")
+@Entity(name = "role_users")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleCustomerEntity extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class RoleUserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_customer_id", unique = true, nullable = false)
-    private Long roleCustomerId;
+    @Column(name = "role_user_id", unique = true, nullable = false)
+    private Long roleUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rol_id", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private CustomerView customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserView user;
 }

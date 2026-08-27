@@ -1,6 +1,6 @@
 package com.rtravez.msa.repository;
 
-import com.rtravez.msa.entity.view.CustomerView;
+import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.exception.ExceptionManager;
 
 import java.util.Optional;
@@ -11,15 +11,15 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface ICustomerRepository extends IGenericRepository<CustomerView, Long> {
+public interface IUserRepository extends IGenericRepository<UserView, Long> {
 
     /**
-     * Find Customer by username
+     * Find User by username
      *
      * @param username
      * @return
      * @throws ExceptionManager
      */
-    Optional<CustomerView> findCustomerByUsername(String username) throws ExceptionManager;
+    Optional<UserView> findByUsername(String username) throws ExceptionManager;
 
 }

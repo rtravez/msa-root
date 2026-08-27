@@ -1,19 +1,16 @@
 package com.rtravez.msa.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotEmpty;
-import java.io.Serializable;
-
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class CustomerRequest extends PersonRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserRequest extends PersonRequest {
 
-    private Long customerId;
+    private Long userId;
     @NotEmpty
     private String password;
     @NotEmpty

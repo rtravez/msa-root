@@ -1,41 +1,50 @@
 package com.rtravez.msa.entity.common;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "creation_host", updatable = false, length = 50, nullable = false)
-    protected String creationHost;
+    @Column(name = "created_host", updatable = false, length = 50, nullable = false)
+    protected String createdHost;
 
-    @Column(name = "modification_host", updatable = false, length = 50)
-    protected String modificationHost;
+    @Column(name = "last_modified_host", length = 50)
+    protected String lastModifiedHost;
 
-    @Column(name = "creation_user", updatable = false, length = 50, nullable = false)
-    protected String creationUser;
+    @Column(name = "created_user", updatable = false, length = 50, nullable = false)
+    @CreatedBy
+    protected String createdUser;
 
-    @Column(name = "modification_user", updatable = false, length = 50)
-    protected String modificationUser;
+    @Column(name = "last_modified_user", length = 50)
+    @LastModifiedBy
+    protected String lastModifiedUser;
 
-    @Column(name = "creation_date", updatable = false, nullable = false)
+    @Column(name = "created_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    protected Date creationDate;
+    @CreatedDate
+    protected LocalDateTime createdDate;
 
-    @Column(name = "modification_date", updatable = false)
+    @Column(name = "last_modified_date")
     @Temporal(TemporalType.TIMESTAMP)
-    protected Date modificationDate;
+    @LastModifiedDate
+    protected LocalDateTime lastModifiedDate;
 
     @Column(name = "status", nullable = false)
     protected Boolean status;

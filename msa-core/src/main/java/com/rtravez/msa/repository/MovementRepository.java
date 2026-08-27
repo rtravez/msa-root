@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
 import static com.rtravez.msa.entity.QMovementEntity.movementEntity;
-import static com.rtravez.msa.entity.view.QCustomerView.customerView;
+import static com.rtravez.msa.entity.view.QUserView.userView;
 import static com.rtravez.msa.entity.view.QPersonView.personView;
 import static com.rtravez.msa.util.DateUtil.convertStringToDate;
 import static com.querydsl.core.types.Projections.bean;
@@ -34,7 +34,8 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
     @Override
     public Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager {
         try {
-            String jpql = "SELECT a FROM " + MovementEntity.class.getName() + " a WHERE a.accountId = :accountId AND a.status = :status ORDER BY a.movementDate DESC";
+            String jpql = "SELECT a FROM " + MovementEntity.class.getName()
+                    + " a WHERE a.accountId = :accountId AND a.status = :status ORDER BY a.movementDate DESC";
 
             TypedQuery<MovementEntity> query = getEntityManager().createQuery(jpql, MovementEntity.class);
             query.setParameter("accountId", account.getAccountId());
@@ -52,7 +53,8 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
     }
 
     @Override
-    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager {
+    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate,
+            String identification, String accountType) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
             where.and(personView.identification.eq(identification));
@@ -60,18 +62,19 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
                     .between(convertStringToDate(initialDate), convertStringToDate(finalDate)));
             where.and(movementEntity.status.isTrue());
 
-            if(StringUtils.hasText(accountType)){
+            if (StringUtils.hasText(accountType)) {
                 where.and(accountEntity.accountType.eq(accountType));
             }
 
             return queryFactory.selectFrom(movementEntity)
                     .select(bean(MovementReportResponse.class, movementEntity.movementDate, personView.identification,
-                            personView.name, personView.lastname, accountEntity.accountNumber, accountEntity.accountType,
+                            personView.name, personView.lastname, accountEntity.accountNumber,
+                            accountEntity.accountType,
                             accountEntity.initialBalance, movementEntity.status, movementEntity.value,
                             movementEntity.availableBalance))
                     .innerJoin(movementEntity.account, accountEntity)
-                    .innerJoin(accountEntity.customer, customerView)
-                    .innerJoin(customerView.person, personView)
+                    .innerJoin(accountEntity.user, userView)
+                    .innerJoin(userView.person, personView)
                     .where(where).orderBy(movementEntity.movementDate.desc())
                     .fetch();
         } catch (Exception e) {
@@ -86,7 +89,8 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
             BooleanBuilder where = new BooleanBuilder();
             where.and(movementEntity.accountId.eq(accountId));
 
-            JPQLQuery<String> query = queryFactory.selectFrom(movementEntity).select(movementEntity.movementId.stringValue())
+            JPQLQuery<String> query = queryFactory.selectFrom(movementEntity)
+                    .select(movementEntity.movementId.stringValue())
                     .innerJoin(movementEntity.account, accountEntity)
                     .where(where);
             return org.apache.commons.lang3.StringUtils.isNotBlank(query.fetchFirst());

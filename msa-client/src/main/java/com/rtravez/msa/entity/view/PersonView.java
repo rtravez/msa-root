@@ -1,11 +1,8 @@
 package com.rtravez.msa.entity.view;
 
+import java.util.List;
+
 import com.rtravez.msa.entity.common.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +11,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.io.Serializable;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "persons")
 @Builder
@@ -23,9 +23,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonView extends BaseEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class PersonView extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +52,5 @@ public class PersonView extends BaseEntity implements Serializable {
     private Integer age;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
-    private List<CustomerView> customers;
+    private List<UserView> users;
 }
-
-

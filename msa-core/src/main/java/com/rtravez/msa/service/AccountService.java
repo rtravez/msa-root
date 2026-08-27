@@ -1,32 +1,29 @@
 package com.rtravez.msa.service;
 
-import com.rtravez.msa.dto.request.AccountRequest;
-import com.rtravez.msa.dto.request.CustomerRequest;
-import com.rtravez.msa.dto.request.MovementRequest;
-import com.rtravez.msa.dto.response.AccountResponse;
-import com.rtravez.msa.dto.response.CustomerResponse;
-import com.rtravez.msa.entity.AccountEntity;
-import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.repository.IAccountRepository;
-import com.rtravez.msa.service.common.IDependenceService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import com.rtravez.msa.dto.request.AccountRequest;
+import com.rtravez.msa.dto.request.MovementRequest;
+import com.rtravez.msa.dto.request.UserRequest;
+import com.rtravez.msa.dto.response.AccountResponse;
+import com.rtravez.msa.dto.response.UserResponse;
+import com.rtravez.msa.entity.AccountEntity;
+import com.rtravez.msa.exception.ExceptionManager;
+import com.rtravez.msa.repository.IAccountRepository;
+import com.rtravez.msa.service.common.IDependenceService;
+import com.rtravez.msa.util.DateUtil;
+import com.rtravez.msa.web.ClientIpProvider;
 
-import static com.rtravez.msa.common.Constants.CREATION_HOST;
-import static com.rtravez.msa.common.Constants.CREATION_USER;
-import static com.rtravez.msa.common.Constants.MODIFICATION_HOST;
-import static com.rtravez.msa.common.Constants.MODIFICATION_USER;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * <b> Description de la class, interface o enumeration. </b>
+ * <b> Description de la class, interface or enumeration. </b>
  *
  * @author renetravez
  * @version $1.0$
@@ -39,12 +36,12 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     private IDependenceService dependenceService;
     @Autowired
     private IMovementService movementService;
-
+    @Autowired
+    private ClientIpProvider clientIpProvider;
 
     public AccountService(IAccountRepository repository) {
         super(repository);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -61,12 +58,12 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     @Transactional
     public AccountResponse processSaveAccount(AccountRequest request) throws ExceptionManager {
         try {
-            CustomerResponse customerResponse = findCustomerResponse(request.getIdentification());
-            if (isCustomerResponseValid(customerResponse)) {
-                AccountEntity account = createAccountEntity(request, customerResponse);
+            UserResponse userResponse = findUserResponse(request.getIdentification());
+            if (isUserResponseValid(userResponse)) {
+                AccountEntity account = createAccountEntity(request, userResponse);
                 repository.save(account);
                 processMovement(account);
-                return buildAccountResponse(account, customerResponse);
+                return buildAccountResponse(account, userResponse);
             }
             return null;
         } catch (Exception e) {
@@ -76,48 +73,46 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     }
 
     /**
-     * Find customer web service extern
+     * Find user web service extern
      *
      * @param identification
      * @return
      * @throws ExceptionManager
      */
-    private CustomerResponse findCustomerResponse(String identification) throws ExceptionManager {
-        CustomerRequest customerRequest = CustomerRequest.builder().build();
-        customerRequest.setIdentification(identification);
-        return dependenceService.findCustomerByIdentification(customerRequest);
+    private UserResponse findUserResponse(String identification) throws ExceptionManager {
+        UserRequest userRequest = UserRequest.builder().build();
+        userRequest.setIdentification(identification);
+        return dependenceService.findUserByIdentification(userRequest);
     }
 
     /**
-     * Customer valid
+     * User valid
      *
-     * @param customerResponse
+     * @param userResponse
      * @return
      */
-    private boolean isCustomerResponseValid(CustomerResponse customerResponse) {
-        return customerResponse != null && customerResponse.getCustomerId() != null;
+    private boolean isUserResponseValid(UserResponse userResponse) {
+        return userResponse != null && userResponse.getUserId() != null;
     }
 
     /**
      * Save account
      *
      * @param request
-     * @param customerResponse
+     * @param userResponse
      * @return
      */
-    private AccountEntity createAccountEntity(AccountRequest request, CustomerResponse customerResponse) {
+    private AccountEntity createAccountEntity(AccountRequest request, UserResponse userResponse) {
 
         AccountEntity account = AccountEntity.builder()
                 .accountNumber(request.getAccountNumber())
                 .accountType(request.getAccountType())
                 .initialBalance(request.getInitialBalance())
-                .customerId(customerResponse.getCustomerId())
+                .userId(userResponse.getUserId())
                 .build();
 
         account.setStatus(request.getStatus());
-        account.setCreationUser(CREATION_USER);
-        account.setCreationHost(CREATION_HOST);
-        account.setCreationDate(Date.from(Instant.now()));
+        account.setCreatedHost(clientIpProvider.getCurrentIp());
 
         return account;
     }
@@ -140,19 +135,19 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
      * AccountResponse
      *
      * @param account
-     * @param customerResponse
+     * @param userResponse
      * @return
      */
-    private AccountResponse buildAccountResponse(AccountEntity account, CustomerResponse customerResponse) {
+    private AccountResponse buildAccountResponse(AccountEntity account, UserResponse userResponse) {
         return AccountResponse.builder()
-                .customerId(account.getCustomerId())
+                .userId(account.getUserId())
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .initialBalance(account.getInitialBalance())
                 .status(account.getStatus())
-                .name(customerResponse.getName())
-                .lastname(customerResponse.getLastname())
+                .name(userResponse.getName())
+                .lastname(userResponse.getLastname())
                 .build();
     }
 
@@ -160,16 +155,16 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     public List<AccountResponse> findAccountAll() throws ExceptionManager {
         try {
             List<AccountResponse> accountResponses = new ArrayList<>();
-            List<AccountEntity> customers = repository.findAll();
-            customers.forEach(it -> accountResponses.add(AccountResponse.builder()
+            List<AccountEntity> users = repository.findAll();
+            users.forEach(it -> accountResponses.add(AccountResponse.builder()
                     .accountNumber(it.getAccountNumber())
                     .accountType(it.getAccountType())
                     .initialBalance(it.getInitialBalance())
                     .status(it.getStatus())
                     .accountId(it.getAccountId())
-                    .customerId(it.getCustomerId())
-                    .name(it.getCustomer().getPerson().getName())
-                    .lastname(it.getCustomer().getPerson().getLastname())
+                    .userId(it.getUserId())
+                    .name(it.getUser().getPerson().getName())
+                    .lastname(it.getUser().getPerson().getLastname())
                     .build()));
             return accountResponses;
         } catch (Exception e) {
@@ -182,16 +177,16 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     @Transactional
     public AccountResponse processUpdateAccount(AccountRequest request) throws ExceptionManager {
         try {
-            CustomerRequest customerRequest = CustomerRequest.builder().build();
-            customerRequest.setIdentification(request.getIdentification());
+            UserRequest userRequest = UserRequest.builder().build();
+            userRequest.setIdentification(request.getIdentification());
 
-            //Consumir servicio web externos
-            CustomerResponse customerResponse = dependenceService.findCustomerByIdentification(customerRequest);
+            // Consumir servicio web externos
+            UserResponse userResponse = dependenceService.findUserByIdentification(userRequest);
 
-            if (customerResponse != null && customerResponse.getCustomerId() != null) {
+            if (userResponse != null && userResponse.getUserId() != null) {
                 Optional<AccountEntity> account = repository.findAccountByAccountNumber(request.getAccountNumber());
 
-                return account.map(value -> this.updateAccount(value, customerResponse, request)).orElse(null);
+                return account.map(value -> this.updateAccount(value, userResponse, request)).orElse(null);
             }
             return null;
         } catch (Exception e) {
@@ -204,19 +199,19 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
      * Update account
      *
      * @param account
-     * @param customerResponse
+     * @param userResponse
      * @param request
      * @return
      */
-    private AccountResponse updateAccount(AccountEntity account, CustomerResponse customerResponse, AccountRequest request) {
+    private AccountResponse updateAccount(AccountEntity account, UserResponse userResponse,
+            AccountRequest request) {
         account.setAccountNumber(request.getAccountNumber());
         account.setAccountType(request.getAccountType());
         account.setInitialBalance(request.getInitialBalance());
 
         account.setStatus(request.getStatus());
-        account.setModificationUser(MODIFICATION_USER);
-        account.setModificationHost(MODIFICATION_HOST);
-        account.setModificationDate(Date.from(Instant.now()));
+        account.setLastModifiedHost(clientIpProvider.getCurrentIp());
+        account.setLastModifiedDate(DateUtil.currentDate());
         super.update(account);
         this.processMovement(account);
 
@@ -225,10 +220,10 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
                 .accountType(account.getAccountType())
                 .initialBalance(account.getInitialBalance())
                 .status(account.getStatus())
-                .name(customerResponse.getName())
-                .lastname(customerResponse.getLastname())
+                .name(userResponse.getName())
+                .lastname(userResponse.getLastname())
                 .accountId(account.getAccountId())
-                .customerId(account.getCustomerId())
+                .userId(account.getUserId())
                 .build();
     }
 

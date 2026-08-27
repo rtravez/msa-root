@@ -17,9 +17,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.io.Serializable;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity(name = "movements")
 @Builder
@@ -27,8 +27,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovementEntity extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class MovementEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +36,7 @@ public class MovementEntity extends BaseEntity implements Serializable {
 
     @Column(name = "movement_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date movementDate;
+    private LocalDateTime movementDate;
 
     @Column(name = "movement_type", nullable = false, length = 1)
     private Character movementType;
@@ -48,7 +47,7 @@ public class MovementEntity extends BaseEntity implements Serializable {
     @Column(name = "available_balance", nullable = false)
     private BigDecimal availableBalance;
 
-    @Column(name = "account_id",  nullable = false)
+    @Column(name = "account_id", nullable = false)
     private Long accountId;
 
     @ManyToOne(fetch = FetchType.LAZY)

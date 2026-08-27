@@ -1,7 +1,7 @@
 package com.rtravez.msa.service.common;
 
-import com.rtravez.msa.dto.request.CustomerRequest;
-import com.rtravez.msa.dto.response.CustomerResponse;
+import com.rtravez.msa.dto.request.UserRequest;
+import com.rtravez.msa.dto.response.UserResponse;
 
 /**
  * <b> Description de la clase, interface o enumeration. </b>
@@ -11,5 +11,5 @@ import com.rtravez.msa.dto.response.CustomerResponse;
  */
 public interface IDependenceService {
 
-    CustomerResponse findCustomerByIdentification(CustomerRequest request);
+    UserResponse findUserByIdentification(UserRequest request);
 }

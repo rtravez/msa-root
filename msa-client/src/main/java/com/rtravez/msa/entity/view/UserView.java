@@ -1,13 +1,10 @@
 package com.rtravez.msa.entity.view;
 
+import java.util.List;
+
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.common.BaseEntity;
-import com.rtravez.msa.entity.common.RoleCustomerEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.rtravez.msa.entity.common.RoleUserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,25 +15,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
-@Entity(name = "customers")
+@Entity(name = "users")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerView extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class UserView extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id", unique = true, nullable = false)
-    private Long customerId;
+    @Column(name = "user_id", unique = true, nullable = false)
+    private Long userId;
 
     @Column(nullable = false, length = 60)
     private String password;
@@ -44,13 +40,13 @@ public class CustomerView extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 20)
     private String username;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private List<RoleCustomerEntity> roleCustomers;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RoleUserEntity> roleUsers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private PersonView person;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AccountEntity> accounts;
 }

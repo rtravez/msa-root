@@ -7,6 +7,8 @@ import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.repository.IMovementRepository;
+import com.rtravez.msa.util.DateUtil;
+import com.rtravez.msa.web.ClientIpProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static com.rtravez.msa.common.Constants.CREATION_HOST;
-import static com.rtravez.msa.common.Constants.CREATION_USER;
-
 /**
- * <b> Description de la class, interface o enumeration. </b>
+ * <b> Description de la class, interface or enumeration. </b>
  *
  * @author renetravez
  * @version $1.0$
@@ -36,6 +33,8 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
     private IAccountService accountService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ClientIpProvider clientIpProvider;
 
     public MovementService(IMovementRepository repository) {
         super(repository);
@@ -66,10 +65,9 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
         movement.setAvailableBalance(newBalance);
         movement.setAccount(null);
         movement.setAccountId(account.getAccountId());
-        movement.setCreationUser(CREATION_USER);
-        movement.setCreationHost(CREATION_HOST);
-        movement.setCreationDate(Date.from(Instant.now()));
-        movement.setMovementDate(Date.from(Instant.now()));
+        movement.setCreatedHost(clientIpProvider.getCurrentIp());
+        movement.setCreatedDate(DateUtil.currentDate());
+        movement.setMovementDate(DateUtil.currentDate());
 
         return movement;
     }

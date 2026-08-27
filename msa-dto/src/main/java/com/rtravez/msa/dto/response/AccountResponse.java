@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class AccountResponse implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long accountId;
-    private Long customerId;
+    private Long userId;
     private Long accountNumber;
     private String accountType;
     private BigDecimal initialBalance;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -16,7 +16,7 @@ import java.util.Date;
 public class MovementReportResponse {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date movementDate;
+    private LocalDateTime movementDate;
     private String identification;
     private String name;
     private String lastname;

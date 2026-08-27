@@ -13,7 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "roles")
@@ -22,8 +21,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleEntity extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class RoleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +32,5 @@ public class RoleEntity extends BaseEntity implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private List<RoleCustomerEntity> roleCustomers;
+    private List<RoleUserEntity> roleUsers;
 }

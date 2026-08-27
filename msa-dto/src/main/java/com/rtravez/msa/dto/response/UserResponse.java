@@ -3,9 +3,9 @@ package com.rtravez.msa.dto.response;
 import lombok.Data;
 
 @Data
-public class CustomerResponse {
+public class UserResponse {
 
-    private Long customerId;
+    private Long userId;
     private String username;
     private String name;
     private String lastname;
@@ -13,6 +13,5 @@ public class CustomerResponse {
     private String telephone;
     private String password;
     private boolean status;
-
 
 }
