@@ -3,6 +3,7 @@ package com.rtravez.msa.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.oauth2.server.resource.web.reactive.function.client.ServletBearerExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -23,6 +24,8 @@ public class MsaConfiguration {
 
     @Bean
     public WebClient webClientMcpServices() {
-        return WebClient.builder().build();
+        return WebClient.builder()
+                .filter(new ServletBearerExchangeFilterFunction())
+                .build();
     }
 }
