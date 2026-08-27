@@ -56,15 +56,20 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
 
     @Override
     @Transactional(readOnly = true)
-    public Boolean existUser(String identification) throws ExceptionManager {
-        return isUserResponseValid(findUserResponse(identification));
+    public UserResponse findUserByIdentification(String identification) throws ExceptionManager {
+        return findUserResponse(identification);
     }
 
     @Override
     @Transactional
     public AccountResponse processSaveAccount(AccountRequest request) throws ExceptionManager {
+        return processSaveAccount(request, findUserResponse(request.getIdentification()));
+    }
+
+    @Override
+    @Transactional
+    public AccountResponse processSaveAccount(AccountRequest request, UserResponse userResponse) throws ExceptionManager {
         try {
-            UserResponse userResponse = findUserResponse(request.getIdentification());
             if (isUserResponseValid(userResponse)) {
                 AccountEntity account = createAccountEntity(request, userResponse);
                 repository.save(account);

@@ -3,6 +3,7 @@ package com.rtravez.msa.service;
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
+import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 
@@ -30,10 +31,10 @@ public interface IAccountService extends IGenericService<AccountEntity, Long> {
      * Find user by identification
      *
      * @param identification
-     * @return true or false
+     * @return user response
      * @throws ExceptionManager
      */
-    Boolean existUser(String identification) throws ExceptionManager;
+    UserResponse findUserByIdentification(String identification) throws ExceptionManager;
 
     /**
      * Process save account
@@ -43,6 +44,16 @@ public interface IAccountService extends IGenericService<AccountEntity, Long> {
      * @throws ExceptionManager
      */
     AccountResponse processSaveAccount(AccountRequest request) throws ExceptionManager;
+
+    /**
+     * Process save account with the previously found user
+     *
+     * @param request
+     * @param userResponse
+     * @return
+     * @throws ExceptionManager
+     */
+    AccountResponse processSaveAccount(AccountRequest request, UserResponse userResponse) throws ExceptionManager;
 
     /**
      * Find account all

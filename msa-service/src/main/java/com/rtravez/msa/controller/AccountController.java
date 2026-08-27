@@ -3,6 +3,7 @@ package com.rtravez.msa.controller;
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
+import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -57,11 +58,12 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("La cuenta ya existe").build());
         }
 
-        if (!Boolean.TRUE.equals(this.accountService.existUser(request.getIdentification()))) {
+        UserResponse userResponse = accountService.findUserByIdentification(request.getIdentification());
+        if (userResponse == null || userResponse.getUserId() == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El usuario no existe").build());
         }
 
-        AccountResponse response = accountService.processSaveAccount(request);
+        AccountResponse response = accountService.processSaveAccount(request, userResponse);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
