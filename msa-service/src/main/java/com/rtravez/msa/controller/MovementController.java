@@ -37,7 +37,7 @@ public class MovementController {
     public ResponseEntity<BaseResponseDto<Object>> save(@Valid @RequestBody MovementRequest request) {
         MovementResponse response = movementService.processSaveMovement(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Movimiento creado con \u00E9xito").build());
     }
@@ -55,7 +55,7 @@ public class MovementController {
         if (this.movementService.deleteMovementById(id) >= 1) {
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Movimiento eliminado con \u00E9xito").build());
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("El movimiento no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El movimiento no existe").build());
         }
     }
 }

@@ -54,12 +54,12 @@ public class AccountController {
     @Operation(summary = "Create account")
     public ResponseEntity<BaseResponseDto<Object>> save(@Valid @RequestBody AccountRequest request) {
         if (Boolean.TRUE.equals(this.accountService.exist(request.getAccountNumber()))) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta ya existe").build());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponseDto.builder().code(HttpStatus.CONFLICT.value()).message("La cuenta ya existe").build());
         }
 
         AccountResponse response = accountService.processSaveAccount(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Cuenta creada con \u00E9xito").build());
     }
@@ -76,7 +76,7 @@ public class AccountController {
     public ResponseEntity<BaseResponseDto<Object>> update(@Valid @RequestBody AccountRequest request) {
         AccountResponse response = accountService.processUpdateAccount(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(response).message("Cuenta actualizada con \u00E9xito").build());
@@ -95,7 +95,7 @@ public class AccountController {
         if (this.accountService.deleteAccountById(id) >= 1) {
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Cuenta eliminada con \u00E9xito").build());
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
     }
 }
