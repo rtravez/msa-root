@@ -1,5 +1,6 @@
 package com.rtravez.msa.service;
 
+import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.exception.ExceptionManager;
 
@@ -20,6 +21,6 @@ public interface IUserService extends IGenericService<UserView, Long> {
      * @return
      * @throws ExceptionManager
      */
-    Optional<UserView> findByUsername(String username) throws ExceptionManager;
+    Optional<UserResponse> findByUsername(String username) throws ExceptionManager;
 
 }

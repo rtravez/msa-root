@@ -2,7 +2,6 @@ package com.rtravez.msa.entity;
 
 import com.rtravez.msa.entity.common.BaseEntity;
 import com.rtravez.msa.entity.view.PersonView;
-import com.rtravez.msa.entity.view.UserView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
