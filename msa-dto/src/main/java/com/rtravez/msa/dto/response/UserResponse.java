@@ -11,6 +11,5 @@ public class UserResponse extends PersonResponse {
 
     private Long userId;
     private String username;
-    private String password;
 
 }

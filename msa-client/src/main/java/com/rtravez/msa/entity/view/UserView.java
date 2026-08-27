@@ -1,5 +1,6 @@
 package com.rtravez.msa.entity.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rtravez.msa.entity.common.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -30,6 +31,7 @@ public class UserView extends BaseEntity {
     private Long userId;
 
     @Column(nullable = false, length = 60)
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false, length = 20)
