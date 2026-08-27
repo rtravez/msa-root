@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import com.rtravez.msa.config.UrlDependenceWebServices;
 import com.rtravez.msa.dto.request.UserRequest;
 import com.rtravez.msa.dto.response.UserResponse;
+import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.util.EnvironmentUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +42,10 @@ public class DependenceService implements IDependenceService {
                     .block();
         } catch (WebClientRequestException e) {
             log.error("No fue posible conectar con el servicio de usuarios", e);
-            return null;
+            throw new ExceptionManager.ServiceUnavailableException("El servicio de usuarios no está disponible");
         } catch (WebClientException e) {
             log.error("Ha ocurrido un error al obtener el usuario por identificación", e);
-            return null;
+            throw new ExceptionManager.ServiceUnavailableException("El servicio de usuarios no está disponible");
         }
     }
 }

@@ -83,6 +83,14 @@ public class ExceptionManager extends RuntimeException {
 		}
 	}
 
+	public static class ServiceUnavailableException extends ExceptionManager {
+		private static final long serialVersionUID = 1L;
+
+		public ServiceUnavailableException(String info) {
+			super(info);
+		}
+	}
+
 	public static class BalanceNotAvailableException extends ExceptionManager {
 		private static final long serialVersionUID = 1L;
 
