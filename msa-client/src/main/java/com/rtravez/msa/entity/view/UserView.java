@@ -18,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerView extends BaseEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
