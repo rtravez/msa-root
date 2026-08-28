@@ -25,7 +25,7 @@ public class MovementResponse implements Serializable {
     @NotEmpty
     private Character movementType;
     @NotNull
-    private BigDecimal value;
+    private BigDecimal movementValue;
     @NotNull
     private BigDecimal availableBalance;
     @NotNull

@@ -89,7 +89,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
                 .accountId(movement.getAccountId())
                 .movementDate(movement.getMovementDate())
                 .movementType(movement.getMovementType())
-                .value(movement.getValue())
+                .movementValue(movement.getMovementValue())
                 .availableBalance(movement.getAvailableBalance())
                 .build();
     }

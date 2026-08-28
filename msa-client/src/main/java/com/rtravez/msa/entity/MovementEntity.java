@@ -45,8 +45,8 @@ public class MovementEntity extends BaseEntity {
     @Column(name = "movement_type", nullable = false, length = 1)
     private Character movementType;
 
-    @Column(name = "value", nullable = false, precision = 19, scale = 2)
-    private BigDecimal value;
+    @Column(name = "movement_value", nullable = false, precision = 19, scale = 2)
+    private BigDecimal movementValue;
 
     @Column(name = "available_balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal availableBalance;

@@ -70,7 +70,7 @@ public class MovementRepository extends GenericRepository<MovementEntity, Long> 
                     .select(bean(MovementReportResponse.class, movementEntity.movementDate, personView.identification,
                             personView.name, personView.lastname, accountEntity.accountNumber,
                             accountEntity.accountType,
-                            accountEntity.initialBalance, movementEntity.status, movementEntity.value,
+                            accountEntity.initialBalance, movementEntity.status, movementEntity.movementValue,
                             movementEntity.availableBalance))
                     .innerJoin(movementEntity.account, accountEntity)
                     .innerJoin(accountEntity.person, personView)
