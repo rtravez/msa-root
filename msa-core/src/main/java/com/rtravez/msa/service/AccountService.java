@@ -36,9 +36,9 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
     private final ClientIpProvider clientIpProvider;
 
     public AccountService(IAccountRepository repository,
-                          IDependenceService dependenceService,
-                          IMovementService movementService,
-                          ClientIpProvider clientIpProvider) {
+            IDependenceService dependenceService,
+            IMovementService movementService,
+            ClientIpProvider clientIpProvider) {
         super(repository);
         this.dependenceService = dependenceService;
         this.movementService = movementService;
@@ -70,7 +70,8 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
 
     @Override
     @Transactional
-    public AccountResponse processSaveAccount(AccountRequest request, UserResponse userResponse) throws ExceptionManager {
+    public AccountResponse processSaveAccount(AccountRequest request, UserResponse userResponse)
+            throws ExceptionManager {
         try {
             if (isUserResponseValid(userResponse)) {
                 AccountEntity account = createAccountEntity(request, userResponse);
@@ -140,7 +141,7 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
         MovementRequest movementRequest = new MovementRequest();
         movementRequest.setAccountNumber(account.getAccountNumber());
         movementRequest.setMovementType("D");
-        movementRequest.setValue(account.getInitialBalance());
+        movementRequest.setMovementValue(account.getInitialBalance());
         movementService.processSaveMovement(movementRequest);
     }
 

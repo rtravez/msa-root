@@ -25,6 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SpringSecurityConfig {
 
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String ACCOUNTS_API_PATH = "/api/accounts/**";
+	private static final String REPORTS_API_PATH = "/api/reports/**";
 	private static final String[] PUBLIC_ENDPOINTS = {
 			"/error",
 			"/v3/api-docs/**",
@@ -39,13 +41,11 @@ public class SpringSecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/accounts", "/api/accounts/{id}", "/api/accounts/**")
-				.hasAuthority(ROLE_ADMIN)
-				.requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
-				.requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
-				.requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority(ROLE_ADMIN)
-				.requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/{id}", "/api/reports/**")
-				.hasAuthority(ROLE_ADMIN)
+				.requestMatchers(HttpMethod.GET, ACCOUNTS_API_PATH).hasAuthority(ROLE_ADMIN)
+				.requestMatchers(HttpMethod.POST, ACCOUNTS_API_PATH).hasAuthority(ROLE_ADMIN)
+				.requestMatchers(HttpMethod.PUT, ACCOUNTS_API_PATH).hasAuthority(ROLE_ADMIN)
+				.requestMatchers(HttpMethod.DELETE, ACCOUNTS_API_PATH).hasAuthority(ROLE_ADMIN)
+				.requestMatchers(HttpMethod.GET, REPORTS_API_PATH).hasAuthority(ROLE_ADMIN)
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(

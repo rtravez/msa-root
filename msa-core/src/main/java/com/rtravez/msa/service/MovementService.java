@@ -29,7 +29,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository> implements IMovementService {
+public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository>
+        implements IMovementService {
 
     private final IAccountRepository accountRepository;
     private final ModelMapper modelMapper;
@@ -52,7 +53,8 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
      * @return
      */
     private BigDecimal getAvailableBalance(AccountEntity account) {
-        return repository.findLastMovement(account).map(movement -> movement.getAvailableBalance()).orElse(BigDecimal.ZERO);
+        return repository.findLastMovement(account).map(movement -> movement.getAvailableBalance())
+                .orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -66,7 +68,9 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
         BigDecimal availableBalance = getAvailableBalance(account);
         MovementEntity movement = modelMapper.map(request, MovementEntity.class);
 
-        BigDecimal newBalance = request.getValue().doubleValue() > 0 ? availableBalance.add(request.getValue()) : availableBalance.subtract(request.getValue().abs());
+        BigDecimal newBalance = request.getMovementValue().doubleValue() > 0
+                ? availableBalance.add(request.getMovementValue())
+                : availableBalance.subtract(request.getMovementValue().abs());
         movement.setAvailableBalance(newBalance);
         movement.setAccount(null);
         movement.setAccountId(account.getAccountId());
@@ -101,7 +105,8 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
      * @param value
      * @throws ExceptionManager.BalanceNotAvailableException
      */
-    private void validateSufficientBalance(AccountEntity account, BigDecimal value) throws ExceptionManager.BalanceNotAvailableException {
+    private void validateSufficientBalance(AccountEntity account, BigDecimal value)
+            throws ExceptionManager.BalanceNotAvailableException {
         BigDecimal availableBalance = getAvailableBalance(account);
         if (value.signum() < 0 && value.abs().compareTo(availableBalance) > 0) {
             throw new ExceptionManager.BalanceNotAvailableException("Saldo no disponible");
@@ -115,7 +120,7 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
             Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
 
             if (account.isPresent()) {
-                validateSufficientBalance(account.get(), request.getValue());
+                validateSufficientBalance(account.get(), request.getMovementValue());
                 MovementEntity movement = createMovement(request, account.get());
                 repository.save(movement);
                 return buildMomentResponse(movement);
@@ -132,7 +137,8 @@ public class MovementService extends GenericService<MovementEntity, Long, IMovem
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager {
+    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate,
+            String identification, String accountType) throws ExceptionManager {
         try {
             return repository.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
         } catch (Exception e) {

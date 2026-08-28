@@ -28,7 +28,7 @@ public class MovementRequest extends BaseDto {
     private String movementType;
     @NotNull
     @Digits(integer = 19, fraction = 2)
-    private BigDecimal value;
+    private BigDecimal movementValue;
     private BigDecimal availableBalance;
     @NotNull
     @Positive
@@ -36,15 +36,15 @@ public class MovementRequest extends BaseDto {
 
     @AssertTrue(message = "El valor del movimiento no puede ser cero")
     public boolean isValueNonZero() {
-        return value != null && value.signum() != 0;
+        return movementValue != null && movementValue.signum() != 0;
     }
 
     @AssertTrue(message = "El tipo de movimiento no coincide con el signo del valor")
     public boolean isMovementTypeConsistent() {
-        if (movementType == null || value == null) {
+        if (movementType == null || movementValue == null) {
             return true;
         }
-        return ("D".equalsIgnoreCase(movementType) && value.signum() > 0)
-                || ("R".equalsIgnoreCase(movementType) && value.signum() < 0);
+        return ("D".equalsIgnoreCase(movementType) && movementValue.signum() > 0)
+                || ("R".equalsIgnoreCase(movementType) && movementValue.signum() < 0);
     }
 }

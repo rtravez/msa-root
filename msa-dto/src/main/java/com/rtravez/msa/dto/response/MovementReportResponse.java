@@ -24,7 +24,7 @@ public class MovementReportResponse {
     private String accountType;
     private BigDecimal initialBalance;
     private Boolean status;
-    private BigDecimal value;
+    private BigDecimal movementValue;
     private BigDecimal availableBalance;
 
 }
