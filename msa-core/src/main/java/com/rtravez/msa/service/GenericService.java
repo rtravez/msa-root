@@ -1,16 +1,16 @@
 package com.rtravez.msa.service;
 
-import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.repository.IGenericRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+import org.springframework.transaction.annotation.Transactional;
+
+import com.rtravez.msa.exception.ExceptionManager;
+import com.rtravez.msa.repository.IGenericRepository;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public abstract class GenericService<T, ID extends Serializable, R extends IGenericRepository<T, ID>> implements IGenericService<T, ID> {
 

@@ -170,7 +170,9 @@ public class AccountService extends GenericService<AccountEntity, Long, IAccount
         try {
             List<AccountResponse> accountResponses = new ArrayList<>();
             List<AccountEntity> accounts = repository.findAll();
-            accounts.forEach(it -> accountResponses.add(AccountResponse.builder()
+            accounts.stream()
+            .filter(it -> Boolean.TRUE.equals(it.getStatus()))
+            .forEach(it -> accountResponses.add(AccountResponse.builder()
                     .accountNumber(it.getAccountNumber())
                     .accountType(it.getAccountType())
                     .initialBalance(it.getInitialBalance())
