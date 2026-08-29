@@ -12,7 +12,6 @@ import com.rtravez.msa.config.UrlDependenceWebServices;
 import com.rtravez.msa.dto.request.UserRequest;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.util.EnvironmentUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -33,7 +32,7 @@ public class DependenceService implements IDependenceService {
     @Override
     public UserResponse findUserByIdentification(UserRequest request) {
         try {
-            String path = EnvironmentUtil.getDomainNameContext(url.getFindUserByIdentification());
+            String path = url.getFindUserByIdentification();
             return webClientMcpServices.post()
                     .uri(requireNonNull(path, "path must not be null"))
                     .bodyValue(requireNonNull(request, "request must not be null"))
