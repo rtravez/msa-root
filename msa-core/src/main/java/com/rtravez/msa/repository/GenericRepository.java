@@ -6,16 +6,16 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @NoRepositoryBean
-public abstract class GenericRepository<T, ID extends Serializable> implements IGenericRepository<T, ID> {
+public abstract class GenericRepository<T, K> implements IGenericRepository<T, K> {
 
 	protected EntityManager em;
 	protected JPAQueryFactory queryFactory;
-	protected Class<T> domainType;
+	protected final Class<T> domainType;
 
 	public EntityManager getEntityManager() {
 		return em;
@@ -28,7 +28,7 @@ public abstract class GenericRepository<T, ID extends Serializable> implements I
 	}
 
 	protected GenericRepository(Class<T> domainType) {
-		this.domainType = domainType;
+		this.domainType = Objects.requireNonNull(domainType, "domainType must not be null");
 	}
 
 	@Override
@@ -54,12 +54,12 @@ public abstract class GenericRepository<T, ID extends Serializable> implements I
 	}
 
 	@Override
-	public Optional<T> findById(ID id) {
+	public Optional<T> findById(K id) {
 		return Optional.ofNullable(em.find(domainType, id));
 	}
 
 	@Override
-	public void deleteById(ID id) {
+	public void deleteById(K id) {
 		this.findById(id).ifPresent(this::delete);
 	}
 }

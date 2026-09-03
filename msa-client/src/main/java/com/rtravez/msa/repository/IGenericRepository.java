@@ -2,12 +2,11 @@ package com.rtravez.msa.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface IGenericRepository<T, ID extends Serializable> {
+public interface IGenericRepository<T, K> {
 
     /**
      * Save
@@ -37,7 +36,7 @@ public interface IGenericRepository<T, ID extends Serializable> {
      *
      * @param id
      */
-    void deleteById(ID id);
+    void deleteById(K id);
 
     /**
      * Find by id
@@ -45,7 +44,7 @@ public interface IGenericRepository<T, ID extends Serializable> {
      * @param id
      * @return
      */
-    Optional<T> findById(ID id);
+    Optional<T> findById(K id);
 
     /**
      * Find all

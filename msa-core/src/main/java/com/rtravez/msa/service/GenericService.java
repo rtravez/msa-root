@@ -1,6 +1,5 @@
 package com.rtravez.msa.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ import com.rtravez.msa.repository.IGenericRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class GenericService<T, ID extends Serializable, R extends IGenericRepository<T, ID>> implements IGenericService<T, ID> {
+public abstract class GenericService<T, K, R extends IGenericRepository<T, K>> implements IGenericService<T, K> {
 
 	protected final R repository;
 
@@ -33,7 +32,7 @@ public abstract class GenericService<T, ID extends Serializable, R extends IGene
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<T> findById(ID id) throws ExceptionManager {
+	public Optional<T> findById(K id) throws ExceptionManager {
 		try {
 			return repository.findById(id);
 		} catch (Exception e) {
@@ -55,7 +54,7 @@ public abstract class GenericService<T, ID extends Serializable, R extends IGene
 
 	@Override
 	@Transactional
-	public void deleteById(ID id) throws ExceptionManager {
+	public void deleteById(K id) throws ExceptionManager {
 		try {
 			repository.deleteById(id);
 		} catch (Exception e) {
