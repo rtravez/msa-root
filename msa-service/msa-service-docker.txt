@@ -1,8 +1,9 @@
 docker build -t msa-service:latest .
-docker network create cloud-sofka
+docker network create cloud-rtravez
 docker images
 docker image ls
-docker run -P --name msa-service --network cloud-sofka msa-service:latest
+docker run -P --name msa-service --network cloud-rtravez msa-service:latest
+docker run --name msa-service --network cloud-rtravez -p 8082:8082 msa-service:latest
 docker container ls
 docker container --help
 docker ps
