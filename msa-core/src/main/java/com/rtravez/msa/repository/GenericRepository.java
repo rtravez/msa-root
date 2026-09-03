@@ -1,14 +1,11 @@
 package com.rtravez.msa.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.dsl.EntityPathBase;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +49,8 @@ public abstract class GenericRepository<T, ID extends Serializable> implements I
 
 	@Override
 	public List<T> findAll() {
-		CriteriaBuilder cb = this.em.getCriteriaBuilder();
-		CriteriaQuery<T> criteriaQuery = cb.createQuery(domainType);
-		Root<T> root = criteriaQuery.from(domainType);
-		criteriaQuery.select(root);
-		TypedQuery<T> query = em.createQuery(criteriaQuery);
-		return query.getResultList();
+		EntityPathBase<T> entityPath = new EntityPathBase<>(domainType, domainType.getSimpleName());
+		return queryFactory.selectFrom(entityPath).fetch();
 	}
 
 	@Override
