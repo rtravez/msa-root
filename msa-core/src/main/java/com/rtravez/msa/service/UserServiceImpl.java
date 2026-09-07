@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.view.UserView;
-import com.rtravez.msa.repository.IUserRepository;
+import com.rtravez.msa.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class UserService extends GenericService<UserView, Long, IUserRepository> implements IUserService {
+public class UserServiceImpl extends BaseServiceImpl<UserView, Long, UserRepository> implements UserService {
 
-    protected UserService(IUserRepository repository) {
+    protected UserServiceImpl(UserRepository repository) {
         super(repository);
     }
 

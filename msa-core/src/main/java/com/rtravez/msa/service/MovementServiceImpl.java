@@ -14,8 +14,8 @@ import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.repository.IAccountRepository;
-import com.rtravez.msa.repository.IMovementRepository;
+import com.rtravez.msa.repository.AccountRepository;
+import com.rtravez.msa.repository.MovementRepository;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 
@@ -29,15 +29,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class MovementService extends GenericService<MovementEntity, Long, IMovementRepository>
-        implements IMovementService {
+public class MovementServiceImpl extends BaseServiceImpl<MovementEntity, Long, MovementRepository>
+        implements MovementService {
 
-    private final IAccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
     private final ClientIpProvider clientIpProvider;
 
-    protected MovementService(IMovementRepository repository,
-            IAccountRepository accountRepository,
+    protected MovementServiceImpl(MovementRepository repository,
+            AccountRepository accountRepository,
             ModelMapper modelMapper,
             ClientIpProvider clientIpProvider) {
         super(repository);

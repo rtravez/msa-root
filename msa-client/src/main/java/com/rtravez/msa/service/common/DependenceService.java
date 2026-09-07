@@ -9,7 +9,7 @@ import com.rtravez.msa.dto.response.UserResponse;
  * @author renetravez
  * @version $1.0$
  */
-public interface IDependenceService {
+public interface DependenceService {
 
     UserResponse findUserByIdentification(UserRequest request);
 }

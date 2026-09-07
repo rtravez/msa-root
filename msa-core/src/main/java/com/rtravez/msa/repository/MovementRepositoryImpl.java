@@ -25,9 +25,9 @@ import static com.querydsl.core.types.Projections.bean;
 
 @Slf4j
 @Repository
-public class MovementRepository extends GenericRepository<MovementEntity, Long> implements IMovementRepository {
+public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, Long> implements MovementRepository {
 
-    public MovementRepository() {
+    public MovementRepositoryImpl() {
         super(MovementEntity.class);
     }
 

@@ -2,7 +2,7 @@ package com.rtravez.msa.controller;
 
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.response.MovementReportResponse;
-import com.rtravez.msa.service.IMovementService;
+import com.rtravez.msa.service.MovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private final IMovementService movementService;
+    private final MovementService movementService;
 
 
     /**

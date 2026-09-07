@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface IGenericRepository<T, K> {
+public interface BaseRepository<T, K> {
 
     /**
      * Save

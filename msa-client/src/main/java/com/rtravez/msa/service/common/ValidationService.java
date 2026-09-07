@@ -8,7 +8,7 @@ import com.rtravez.msa.exception.ExceptionManager;
  * @author renetravez
  * @version $1.0$
  */
-public interface IValidationService {
+public interface ValidationService {
 
 	boolean validationIdentification(String identification) throws ExceptionManager;
 

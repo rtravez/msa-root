@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Lazy
 @Slf4j
-public class ValidationService implements IValidationService {
+public class ValidationServiceImpl implements ValidationService {
 
 	@Override
 	@Transactional(readOnly = true)

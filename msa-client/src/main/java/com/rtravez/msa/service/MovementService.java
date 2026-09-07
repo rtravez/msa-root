@@ -14,7 +14,7 @@ import java.util.List;
  * @author renetravez
  * @version $1.0$
  */
-public interface IMovementService extends IGenericService<MovementEntity, Long> {
+public interface MovementService extends BaseService<MovementEntity, Long> {
 
     /**
      * Process save movement

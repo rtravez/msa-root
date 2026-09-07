@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * @author renetravez
  * @version $1.0$
  */
-public interface IMovementRepository extends IGenericRepository<MovementEntity, Long> {
+public interface MovementRepository extends BaseRepository<MovementEntity, Long> {
 
     Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager;
 

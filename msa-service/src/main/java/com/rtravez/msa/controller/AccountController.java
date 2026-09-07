@@ -4,7 +4,7 @@ import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.service.IAccountService;
+import com.rtravez.msa.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final IAccountService accountService;
+    private final AccountService accountService;
 
     /**
      * Find account all

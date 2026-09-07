@@ -12,12 +12,12 @@ import static com.rtravez.msa.entity.view.QUserView.userView;
 
 @Slf4j
 @Repository
-public class UserRepository extends GenericRepository<UserView, Long> implements IUserRepository {
+public class UserRepositoryImpl extends BaseRepositoryImpl<UserView, Long> implements UserRepository {
 
     /**
      * Constructor
      */
-    public UserRepository() {
+    public UserRepositoryImpl() {
         super(UserView.class);
     }
 

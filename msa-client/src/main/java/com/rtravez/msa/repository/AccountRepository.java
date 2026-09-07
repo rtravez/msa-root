@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface IAccountRepository extends IGenericRepository<AccountEntity, Long> {
+public interface AccountRepository extends BaseRepository<AccountEntity, Long> {
 
     /**
      * Find account by account number

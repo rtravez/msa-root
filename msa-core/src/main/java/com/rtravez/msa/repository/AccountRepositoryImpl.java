@@ -17,9 +17,9 @@ import static com.rtravez.msa.entity.view.QPersonView.personView;
 
 @Slf4j
 @Repository
-public class AccountRepository extends GenericRepository<AccountEntity, Long> implements IAccountRepository {
+public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Long> implements AccountRepository {
 
-    public AccountRepository() {
+    public AccountRepositoryImpl() {
         super(AccountEntity.class);
     }
 

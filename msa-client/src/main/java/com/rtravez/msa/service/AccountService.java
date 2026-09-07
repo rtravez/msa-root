@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface IAccountService extends IGenericService<AccountEntity, Long> {
+public interface AccountService extends BaseService<AccountEntity, Long> {
 
     /**
      * Find account by account number

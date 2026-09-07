@@ -1,6 +1,5 @@
-package com.rtravez.msa.service;
+package com.rtravez.msa.repository;
 
-import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.exception.ExceptionManager;
 
@@ -12,15 +11,15 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface IUserService extends IGenericService<UserView, Long> {
+public interface UserRepository extends BaseRepository<UserView, Long> {
 
     /**
-     * Find user by username
+     * Find User by username
      *
      * @param username
      * @return
      * @throws ExceptionManager
      */
-    Optional<UserResponse> findByUsername(String username) throws ExceptionManager;
+    Optional<UserView> findByUsername(String username) throws ExceptionManager;
 
 }

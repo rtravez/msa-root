@@ -5,7 +5,7 @@ import com.rtravez.msa.exception.ExceptionManager;
 import java.util.List;
 import java.util.Optional;
 
-public interface IGenericService<T, K> {
+public interface BaseService<T, K> {
 
 	T save(T entity) throws ExceptionManager;
 

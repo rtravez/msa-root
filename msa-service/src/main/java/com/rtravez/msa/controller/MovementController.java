@@ -3,7 +3,7 @@ package com.rtravez.msa.controller;
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.MovementResponse;
-import com.rtravez.msa.service.IMovementService;
+import com.rtravez.msa.service.MovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class MovementController {
 
-    private final IMovementService movementService;
+    private final MovementService movementService;
 
 
     /**

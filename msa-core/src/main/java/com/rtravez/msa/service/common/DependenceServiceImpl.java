@@ -18,12 +18,12 @@ import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
-public class DependenceService implements IDependenceService {
+public class DependenceServiceImpl implements DependenceService {
 
     private final UrlDependenceWebServices url;
     private final WebClient webClientMcpServices;
 
-    public DependenceService(UrlDependenceWebServices url,
+    public DependenceServiceImpl(UrlDependenceWebServices url,
                             @Qualifier("webClientMcpServices") WebClient webClientMcpServices) {
         this.url = url;
         this.webClientMcpServices = webClientMcpServices;

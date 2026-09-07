@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @NoRepositoryBean
-public abstract class GenericRepository<T, K> implements IGenericRepository<T, K> {
+public abstract class BaseRepositoryImpl<T, K> implements BaseRepository<T, K> {
 
 	protected EntityManager em;
 	protected JPAQueryFactory queryFactory;
@@ -27,7 +27,7 @@ public abstract class GenericRepository<T, K> implements IGenericRepository<T, K
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
-	protected GenericRepository(Class<T> domainType) {
+	protected BaseRepositoryImpl(Class<T> domainType) {
 		this.domainType = Objects.requireNonNull(domainType, "domainType must not be null");
 	}
 

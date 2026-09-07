@@ -14,8 +14,8 @@ import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.repository.IAccountRepository;
-import com.rtravez.msa.service.common.IDependenceService;
+import com.rtravez.msa.repository.AccountRepository;
+import com.rtravez.msa.service.common.DependenceService;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 
@@ -29,15 +29,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class AccountService extends GenericService<AccountEntity, Long, IAccountRepository> implements IAccountService {
+public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, AccountRepository> implements AccountService {
 
-    private final IDependenceService dependenceService;
-    private final IMovementService movementService;
+    private final DependenceService dependenceService;
+    private final MovementService movementService;
     private final ClientIpProvider clientIpProvider;
 
-    public AccountService(IAccountRepository repository,
-            IDependenceService dependenceService,
-            IMovementService movementService,
+    public AccountServiceImpl(AccountRepository repository,
+            DependenceService dependenceService,
+            MovementService movementService,
             ClientIpProvider clientIpProvider) {
         super(repository);
         this.dependenceService = dependenceService;

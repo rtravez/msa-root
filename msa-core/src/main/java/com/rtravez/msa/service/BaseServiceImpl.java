@@ -6,16 +6,16 @@ import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rtravez.msa.exception.ExceptionManager;
-import com.rtravez.msa.repository.IGenericRepository;
+import com.rtravez.msa.repository.BaseRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class GenericService<T, K, R extends IGenericRepository<T, K>> implements IGenericService<T, K> {
+public abstract class BaseServiceImpl<T, K, R extends BaseRepository<T, K>> implements BaseService<T, K> {
 
 	protected final R repository;
 
-	protected GenericService(R repository) {
+	protected BaseServiceImpl(R repository) {
 		this.repository = repository;
 	}
 
