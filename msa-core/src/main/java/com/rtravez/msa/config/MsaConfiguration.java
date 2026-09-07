@@ -4,8 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.oauth2.server.resource.web.reactive.function.client.ServletBearerExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.client.RestClient;
 
 /**
  * MsaConfiguration spring configuration.
@@ -25,9 +27,15 @@ public class MsaConfiguration {
     }
 
     @Bean
-    public WebClient webClientMcpServices() {
-        return WebClient.builder()
-                .filter(new ServletBearerExchangeFilterFunction())
+    public RestClient restClientMcpServices() {
+        return RestClient.builder()
+                .requestInterceptor((request, body, execution) -> {
+                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                    if (authentication instanceof JwtAuthenticationToken jwtAuthentication) {
+                        request.getHeaders().setBearerAuth(jwtAuthentication.getToken().getTokenValue());
+                    }
+                    return execution.execute(request, body);
+                })
                 .build();
     }
 }
