@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
@@ -27,8 +28,8 @@ import static com.querydsl.core.types.Projections.bean;
 @Repository
 public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, Long> implements MovementRepository {
 
-    public MovementRepositoryImpl() {
-        super(MovementEntity.class);
+    public MovementRepositoryImpl(EntityManager em) {
+        super(MovementEntity.class, em);
     }
 
     @Override

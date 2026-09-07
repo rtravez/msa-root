@@ -1,14 +1,17 @@
 package com.rtravez.msa.repository;
 
-import com.rtravez.msa.entity.view.UserView;
-import com.rtravez.msa.exception.ExceptionManager;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import static com.rtravez.msa.entity.view.QPersonView.personView;
+import static com.rtravez.msa.entity.view.QUserView.userView;
 
 import java.util.Optional;
 
-import static com.rtravez.msa.entity.view.QPersonView.personView;
-import static com.rtravez.msa.entity.view.QUserView.userView;
+import org.springframework.stereotype.Repository;
+
+import com.rtravez.msa.entity.view.UserView;
+import com.rtravez.msa.exception.ExceptionManager;
+
+import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Repository
@@ -17,8 +20,8 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<UserView, Long> imple
     /**
      * Constructor
      */
-    public UserRepositoryImpl() {
-        super(UserView.class);
+    public UserRepositoryImpl(EntityManager em) {
+        super(UserView.class,em);
     }
 
     @Override

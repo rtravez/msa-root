@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
 import java.util.Optional;
@@ -19,8 +20,8 @@ import static com.rtravez.msa.entity.view.QPersonView.personView;
 @Repository
 public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Long> implements AccountRepository {
 
-    public AccountRepositoryImpl() {
-        super(AccountEntity.class);
+    public AccountRepositoryImpl(EntityManager em) {
+        super(AccountEntity.class, em);
     }
 
     @Override
