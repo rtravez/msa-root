@@ -1,6 +1,5 @@
 package com.rtravez.msa.config;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -18,13 +17,6 @@ import org.springframework.web.client.RestClient;
 @EnableAsync
 @EnableJpaRepositories(basePackages = { "com.rtravez.msa.repository" }, repositoryImplementationPostfix = "Impl")
 public class MsaConfiguration {
-
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        return modelMapper;
-    }
 
     @Bean
     public RestClient restClientMcpServices() {
