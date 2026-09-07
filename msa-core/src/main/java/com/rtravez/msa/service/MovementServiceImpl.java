@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rtravez.msa.dto.request.MovementRequest;
+import com.rtravez.msa.mapper.MovementMapper;
 import com.rtravez.msa.dto.response.MovementReportResponse;
 import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.entity.AccountEntity;
@@ -35,8 +35,8 @@ public class MovementServiceImpl implements MovementService {
 
     private final AccountRepository accountRepository;
     private final MovementRepository movementRepository;
-    private final ModelMapper modelMapper;
-    private final ClientIpProvider clientIpProvider;    
+    private final MovementMapper movementMapper;
+    private final ClientIpProvider clientIpProvider;
 
     /**
      * Find last movement
@@ -58,7 +58,7 @@ public class MovementServiceImpl implements MovementService {
      */
     private MovementEntity createMovement(MovementRequest request, AccountEntity account) {
         BigDecimal availableBalance = getAvailableBalance(account);
-        MovementEntity movement = modelMapper.map(request, MovementEntity.class);
+        MovementEntity movement = movementMapper.toEntity(request);
 
         BigDecimal newBalance = request.getMovementValue().doubleValue() > 0
                 ? availableBalance.add(request.getMovementValue())
