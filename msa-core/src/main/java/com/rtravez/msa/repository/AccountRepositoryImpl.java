@@ -58,7 +58,7 @@ public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Lon
             String jpql = "SELECT a FROM " + AccountEntity.class.getName()
                     + " a WHERE a.accountNumber = :accountNumber AND a.status = true";
 
-            TypedQuery<AccountEntity> query = getEntityManager().createQuery(jpql, AccountEntity.class);
+            TypedQuery<AccountEntity> query = entityManager.createQuery(jpql, AccountEntity.class);
             query.setParameter("accountNumber", accountNumber);
             query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 

@@ -38,7 +38,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
             String jpql = "SELECT a FROM " + MovementEntity.class.getName()
                     + " a WHERE a.accountId = :accountId AND a.status = :status ORDER BY a.movementDate DESC";
 
-            TypedQuery<MovementEntity> query = getEntityManager().createQuery(jpql, MovementEntity.class);
+            TypedQuery<MovementEntity> query = entityManager.createQuery(jpql, MovementEntity.class);
             query.setParameter("accountId", account.getAccountId());
             query.setParameter("status", true);
             query.setMaxResults(1);
@@ -110,7 +110,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
                     + " AND (a.movementDate > :movementDate"
                     + " OR (a.movementDate = :movementDate AND a.movementId > :movementId))";
 
-            TypedQuery<Long> query = getEntityManager().createQuery(jpql, Long.class);
+            TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
             query.setParameter("accountId", accountId);
             query.setParameter("movementDate", movementDate);
             query.setParameter("movementId", movementId);

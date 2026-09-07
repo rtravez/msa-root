@@ -221,7 +221,7 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(request.getStatus());
         account.setLastModifiedHost(clientIpProvider.getCurrentIp());
         account.setLastModifiedDate(DateUtil.currentDate());
-        super.update(account);
+        accountRepository.save(account);
         this.processMovement(account);
 
         return AccountResponse.builder()
