@@ -1,0 +1,1 @@
+INSERT INTO persons (created_date, created_host, created_user, status, address, age, gender, identification, lastname, name, telephone) VALUES(NOW(), '127.0.0.1', 'admin', true, 'La Concepción', 36, 'M', '0987456321', 'test', 'test', '1234567891');
