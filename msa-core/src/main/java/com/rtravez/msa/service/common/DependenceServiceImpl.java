@@ -13,21 +13,17 @@ import com.rtravez.msa.dto.request.UserRequest;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.exception.ExceptionManager;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor 
 public class DependenceServiceImpl implements DependenceService {
 
     private final UrlDependenceWebServices url;
-    private final WebClient webClientMcpServices;
-
-    public DependenceServiceImpl(UrlDependenceWebServices url,
-                            @Qualifier("webClientMcpServices") WebClient webClientMcpServices) {
-        this.url = url;
-        this.webClientMcpServices = webClientMcpServices;
-    }
+    private final @Qualifier("webClientMcpServices") WebClient webClientMcpServices;    
 
     @Override
     public UserResponse findUserByIdentification(UserRequest request) {

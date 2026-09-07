@@ -2,6 +2,7 @@ package com.rtravez.msa.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.oauth2.server.resource.web.reactive.function.client.ServletBearerExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  * @version 1.0
  */
 @EnableAsync
+@EnableJpaRepositories(basePackages = { "com.rtravez.msa.repository" }, repositoryImplementationPostfix = "Impl")
 public class MsaConfiguration {
 
     @Bean

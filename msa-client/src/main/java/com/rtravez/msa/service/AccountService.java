@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface AccountService extends BaseService<AccountEntity, Long> {
+public interface AccountService {
 
     /**
      * Find account by account number

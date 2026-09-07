@@ -19,6 +19,7 @@ import com.rtravez.msa.service.common.DependenceService;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,27 +30,19 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, AccountRepository> implements AccountService {
+@RequiredArgsConstructor
+public class AccountServiceImpl implements AccountService {
 
     private final DependenceService dependenceService;
     private final MovementService movementService;
     private final ClientIpProvider clientIpProvider;
-
-    public AccountServiceImpl(AccountRepository repository,
-            DependenceService dependenceService,
-            MovementService movementService,
-            ClientIpProvider clientIpProvider) {
-        super(repository);
-        this.dependenceService = dependenceService;
-        this.movementService = movementService;
-        this.clientIpProvider = clientIpProvider;
-    }
+    private final AccountRepository accountRepository;
 
     @Override
     @Transactional(readOnly = true)
     public Boolean exist(Long accountNumber) throws ExceptionManager {
         try {
-            return repository.exist(accountNumber);
+            return accountRepository.exist(accountNumber);
         } catch (ExceptionManager e) {
             log.error("exist", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
@@ -75,7 +68,7 @@ public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, Acc
         try {
             if (isUserResponseValid(userResponse)) {
                 AccountEntity account = createAccountEntity(request, userResponse);
-                repository.save(account);
+                accountRepository.save(account);
                 processMovement(account);
                 return buildAccountResponse(account, userResponse);
             }
@@ -169,7 +162,7 @@ public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, Acc
     public List<AccountResponse> findAccountAll() throws ExceptionManager {
         try {
             List<AccountResponse> accountResponses = new ArrayList<>();
-            List<AccountEntity> accounts = repository.findAll();
+            List<AccountEntity> accounts = accountRepository.findAll();
             accounts.stream()
             .filter(it -> Boolean.TRUE.equals(it.getStatus()))
             .forEach(it -> accountResponses.add(AccountResponse.builder()
@@ -200,7 +193,7 @@ public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, Acc
             UserResponse userResponse = dependenceService.findUserByIdentification(userRequest);
 
             if (userResponse != null && userResponse.getUserId() != null) {
-                Optional<AccountEntity> account = repository.findAccountByAccountNumber(request.getAccountNumber());
+                Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
 
                 return account.map(value -> this.updateAccount(value, userResponse, request)).orElse(null);
             }
@@ -247,11 +240,11 @@ public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, Acc
     @Transactional
     public Long deleteAccountById(Long id) throws ExceptionManager {
         try {
-            Optional<AccountEntity> account = repository.findById(id);
+            Optional<AccountEntity> account = accountRepository.findById(id);
 
             if (account.isPresent()) {
                 validateMovement(account.get().getAccountId());
-                repository.deleteById(account.get().getAccountId());
+                accountRepository.deleteById(account.get().getAccountId());
                 return 1L;
             }
             return 0L;
@@ -280,7 +273,7 @@ public class AccountServiceImpl extends BaseServiceImpl<AccountEntity, Long, Acc
     @Transactional(readOnly = true)
     public Optional<AccountEntity> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager {
         try {
-            return repository.findAccountByAccountNumber(request.getAccountNumber());
+            return accountRepository.findAccountByAccountNumber(request.getAccountNumber());
         } catch (Exception e) {
             log.error("findAccountByAccountNumber", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");

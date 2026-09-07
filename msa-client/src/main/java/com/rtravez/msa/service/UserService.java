@@ -1,10 +1,9 @@
 package com.rtravez.msa.service;
 
-import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.entity.view.UserView;
-import com.rtravez.msa.exception.ExceptionManager;
-
 import java.util.Optional;
+
+import com.rtravez.msa.dto.response.UserResponse;
+import com.rtravez.msa.exception.ExceptionManager;
 
 /**
  * <b> Description de la clase, interface o enumeration. </b>
@@ -12,7 +11,7 @@ import java.util.Optional;
  * @author renetravez
  * @version $1.0$
  */
-public interface UserService extends BaseService<UserView, Long> {
+public interface UserService {
 
     /**
      * Find user by username

@@ -8,6 +8,7 @@ import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,15 +19,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends BaseServiceImpl<UserView, Long, UserRepository> implements UserService {
+@RequiredArgsConstructor 
+public class UserServiceImpl implements UserService {
 
-    protected UserServiceImpl(UserRepository repository) {
-        super(repository);
-    }
+    private final UserRepository userRepository;
 
     @Override
     public Optional<UserResponse> findByUsername(String username) {
-        return repository.findByUsername(username).map(this::toUserResponse);
+        return userRepository.findByUsername(username).map(this::toUserResponse);
     }
 
     private UserResponse toUserResponse(UserView user) {

@@ -1,12 +1,11 @@
 package com.rtravez.msa.service;
 
+import java.util.List;
+
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.MovementReportResponse;
 import com.rtravez.msa.dto.response.MovementResponse;
-import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-
-import java.util.List;
 
 /**
  * <b> Description de la class, interface o enumeration. </b>
@@ -14,7 +13,7 @@ import java.util.List;
  * @author renetravez
  * @version $1.0$
  */
-public interface MovementService extends BaseService<MovementEntity, Long> {
+public interface MovementService {
 
     /**
      * Process save movement
