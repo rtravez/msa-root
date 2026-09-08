@@ -1,11 +1,12 @@
 package com.rtravez.msa.controller.exception;
 
-import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.exception.ExceptionManager;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,114 +21,84 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExceptionManager.ForeignException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleForeignException(ExceptionManager.ForeignException ex) {
+        public ResponseEntity<ProblemDetail> handleForeignException(ExceptionManager.ForeignException ex) {
         log.error("ForeignException: {}", ex.getMessage());
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.CONFLICT.value())
-                .message("Existen movimientos para esta cuenta")
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+                return problem(HttpStatus.CONFLICT, "Existen movimientos para esta cuenta");
     }
 
     @ExceptionHandler(ExceptionManager.BalanceNotAvailableException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleBalanceNotAvailableException(ExceptionManager.BalanceNotAvailableException ex) {
+        public ResponseEntity<ProblemDetail> handleBalanceNotAvailableException(
+                        ExceptionManager.BalanceNotAvailableException ex) {
         log.error("BalanceNotAvailableException: {}", ex.getMessage());
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.PAYMENT_REQUIRED.value())
-                .message("Saldo no disponible")
-                .build();
-        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(response);
+                return problem(HttpStatus.PAYMENT_REQUIRED, "Saldo no disponible");
     }
 
     @ExceptionHandler(ExceptionManager.MovementDeletionException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleMovementDeletionException(
+        public ResponseEntity<ProblemDetail> handleMovementDeletionException(
             ExceptionManager.MovementDeletionException ex) {
         log.warn("Movement deletion rejected: {}", ex.getMessage());
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.CONFLICT.value())
-                .message("No se puede anular un movimiento con movimientos posteriores")
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+                return problem(HttpStatus.CONFLICT, "No se puede anular un movimiento con movimientos posteriores");
     }
 
         @ExceptionHandler(ExceptionManager.ServiceUnavailableException.class)
-        public ResponseEntity<BaseResponseDto<Object>> handleServiceUnavailableException(
+        public ResponseEntity<ProblemDetail> handleServiceUnavailableException(
                         ExceptionManager.ServiceUnavailableException ex) {
                 log.error("Service unavailable: {}", ex.getMessage(), ex);
-                BaseResponseDto<Object> response = BaseResponseDto.builder()
-                                .code(HttpStatus.SERVICE_UNAVAILABLE.value())
-                                .message(ex.getMessage())
-                                .build();
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+                return problem(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
         }
 
     @ExceptionHandler(ExceptionManager.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleExceptionManager(ExceptionManager ex) {
+        public ResponseEntity<ProblemDetail> handleExceptionManager(ExceptionManager ex) {
         log.error("ExceptionManager: {}", ex.getMessage(), ex);
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-            .message("Ocurrió un error al procesar la solicitud")
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al procesar la solicitud");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        public ResponseEntity<ProblemDetail> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage()).toList();
         log.error("Validation error: {}", errors);
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.BAD_REQUEST.value())
-                .message("Error de validación")
-                .errors(errors)
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return problem(HttpStatus.BAD_REQUEST, "Error de validación", errors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleConstraintViolationException(ConstraintViolationException ex) {
+        public ResponseEntity<ProblemDetail> handleConstraintViolationException(ConstraintViolationException ex) {
         log.error("Constraint violation error: ", ex);
         List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()).toList();
 
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.BAD_REQUEST.value())
-                .message("Error de validación de parámetros")
-                .errors(errors)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                return problem(HttpStatus.BAD_REQUEST, "Error de validación de parámetros", errors);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         log.warn("Data integrity violation", ex);
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.CONFLICT.value())
-                .message("La cuenta ya existe o los datos violan una restricción de integridad")
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+                return problem(HttpStatus.CONFLICT, "La cuenta ya existe o los datos violan una restricción de integridad");
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleGenericException(Exception ex) {
+        public ResponseEntity<ProblemDetail> handleGenericException(Exception ex) {
         log.error("Unexpected error: {}", ex.getMessage(), ex);
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Ocurrió un error inesperado en el servidor")
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado en el servidor");
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        public ResponseEntity<ProblemDetail> handleAccessDeniedException(AccessDeniedException ex) {
         log.warn("Access denied: {}", ex.getMessage());
+                return problem(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta operación");
+        }
 
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .code(HttpStatus.FORBIDDEN.value())
-                .message("No tienes permisos para realizar esta operación")
-                .build();
+        private ResponseEntity<ProblemDetail> problem(HttpStatus status, String detail) {
+                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()), detail);
+                problem.setTitle(status.getReasonPhrase());
+                return ResponseEntity.status(status).body(problem);
+        }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        private ResponseEntity<ProblemDetail> problem(HttpStatus status, String detail, List<String> errors) {
+                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()), detail);
+                problem.setTitle(status.getReasonPhrase());
+                problem.setProperty("errors", errors);
+                return ResponseEntity.status(status).body(problem);
     }
 }
