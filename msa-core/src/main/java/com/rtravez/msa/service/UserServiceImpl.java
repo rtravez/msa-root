@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
                             .queryParam("identification", identification)
                             .build())
                     .retrieve()
-                    .toEntity(new ParameterizedTypeReference<BaseResponseDto<UserResponse>>() {
+                    .toEntity(new ParameterizedTypeReference<>() {
                     });
             BaseResponseDto<UserResponse> body = response.getBody();
             return body != null ? body.getData() : null;
