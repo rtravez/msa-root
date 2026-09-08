@@ -1,6 +1,7 @@
 package com.rtravez.msa.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ public class MovementServiceImpl implements MovementService {
                 ? availableBalance.add(request.getMovementValue())
                 : availableBalance.subtract(request.getMovementValue().abs());
         movement.setAvailableBalance(newBalance);
-        movement.setAccount(account);
+        movement.setAccount(accountRepository.findById(account.getAccountId()).orElseThrow(() -> new ExceptionManager("Account not found")));
         movement.setCreatedHost(clientIpProvider.getCurrentIp());
         movement.setCreatedDate(DateUtil.currentDate());
         movement.setMovementDate(DateUtil.currentDate());
@@ -129,8 +130,8 @@ public class MovementServiceImpl implements MovementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate,
-            String identification, String accountType) throws ExceptionManager {
+    public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate,
+                                                                            String identification, String accountType) throws ExceptionManager {
         try {
             return movementRepository.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
         } catch (Exception e) {

@@ -52,6 +52,6 @@ public class MovementEntity extends BaseEntity {
     private BigDecimal availableBalance;    
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id", insertable = false, updatable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
 }

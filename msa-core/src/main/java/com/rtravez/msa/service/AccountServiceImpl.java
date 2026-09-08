@@ -1,13 +1,5 @@
 package com.rtravez.msa.service;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.request.UserRequest;
@@ -17,11 +9,18 @@ import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.mapper.AccountMapper;
 import com.rtravez.msa.repository.AccountRepository;
+import com.rtravez.msa.repository.PersonRepository;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * <b> Description de la class, interface or enumeration. </b>
@@ -39,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
     private final ClientIpProvider clientIpProvider;
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final PersonRepository personRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -117,7 +117,7 @@ public class AccountServiceImpl implements AccountService {
                 .accountNumber(request.getAccountNumber())
                 .accountType(request.getAccountType())
                 .initialBalance(request.getInitialBalance())
-                .personId(userResponse.getUserId())
+                .person(personRepository.findById(userResponse.getPersonId()).orElseThrow(() -> new ExceptionManager("Person not found")))
                 .build();
 
         account.setStatus(request.getStatus());
@@ -149,7 +149,7 @@ public class AccountServiceImpl implements AccountService {
      */
     private AccountResponse buildAccountResponse(AccountEntity account, UserResponse userResponse) {
         return AccountResponse.builder()
-                .personId(account.getPersonId())
+                .personId(account.getPerson().getPersonId())
                 .accountId(account.getAccountId())
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
@@ -219,7 +219,7 @@ public class AccountServiceImpl implements AccountService {
                 .name(userResponse.getName())
                 .lastname(userResponse.getLastname())
                 .accountId(account.getAccountId())
-                .personId(account.getPersonId())
+                .personId(account.getPerson().getPersonId())
                 .build();
     }
 

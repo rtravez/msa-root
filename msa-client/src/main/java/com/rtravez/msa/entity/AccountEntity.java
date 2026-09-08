@@ -48,11 +48,8 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "initial_balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal initialBalance;
 
-    @Column(name = "person_id", nullable = false)
-    private Long personId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id", insertable = false, updatable = false)
+    @JoinColumn(name = "person_id", nullable = false)
     private PersonView person;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController()
@@ -51,9 +52,9 @@ public class ReportController {
     @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<List<MovementReportResponse>>> findMovementByDateAndIdentification(
             @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período, en formato ISO-8601", example = "2026-01-01", required = true)
-            @RequestParam("initialDate") String initialDate,
+            @RequestParam("initialDate") LocalDateTime initialDate,
             @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período, en formato ISO-8601", example = "2026-01-31", required = true)
-            @RequestParam("finalDate") String finalDate,
+            @RequestParam("finalDate") LocalDateTime finalDate,
             @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del cliente", example = "1710034065", required = true)
             @RequestParam("identification") String identification,
             @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS", required = true)

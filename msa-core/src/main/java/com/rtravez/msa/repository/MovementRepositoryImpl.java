@@ -35,8 +35,8 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     @Override
     public Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager {
         try {
-            String jpql = "SELECT a FROM " + MovementEntity.class.getName()
-                    + " a WHERE a.accountId = :accountId AND a.status = :status ORDER BY a.movementDate DESC";
+            String jpql = "SELECT m FROM " + MovementEntity.class.getName()
+                    + " m WHERE m.account.accountId = :accountId AND m.status = :status ORDER BY m.movementDate DESC";
 
             TypedQuery<MovementEntity> query = entityManager.createQuery(jpql, MovementEntity.class);
             query.setParameter("accountId", account.getAccountId());
@@ -54,13 +54,12 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     }
 
     @Override
-    public List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate,
+    public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate,
             String identification, String accountType) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
             where.and(personView.identification.eq(identification));
-            where.and(SQLExpressions.date(movementEntity.movementDate)
-                    .between(convertStringToDate(initialDate), convertStringToDate(finalDate)));
+            where.and(movementEntity.movementDate.between(initialDate, finalDate));
             where.and(movementEntity.status.isTrue());
 
             if (StringUtils.hasText(accountType)) {

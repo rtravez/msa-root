@@ -31,12 +31,12 @@ public class MovementRequest extends BaseDto {
     private Long accountNumber;
 
     @AssertTrue(message = "El valor del movimiento no puede ser cero")
-    public boolean isValueNonZero() {
+    public boolean isMovementValue() {
         return movementValue != null && movementValue.signum() != 0;
     }
 
     @AssertTrue(message = "El tipo de movimiento no coincide con el signo del valor")
-    public boolean isMovementTypeConsistent() {
+    public boolean isMovementType() {
         if (movementType == null || movementValue == null) {
             return true;
         }

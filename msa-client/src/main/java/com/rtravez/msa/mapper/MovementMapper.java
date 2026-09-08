@@ -13,5 +13,6 @@ public interface MovementMapper {
     @BeanMapping (ignoreByDefault = true)
     @Mapping(target = "movementType", source = "movementType")
     @Mapping(target = "movementValue", source = "movementValue")
+    @Mapping(target = "account.accountNumber", source = "accountNumber")
     MovementEntity toEntity(MovementRequest request);
 }

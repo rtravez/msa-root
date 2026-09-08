@@ -19,7 +19,7 @@ public interface MovementRepository extends BaseRepository<MovementEntity, Long>
 
     Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager;
 
-    List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager;
+    List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
 
     boolean findMovementByAccountId(Long accountId) throws ExceptionManager;
 

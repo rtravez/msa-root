@@ -1,5 +1,6 @@
 package com.rtravez.msa.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.rtravez.msa.dto.request.MovementRequest;
@@ -34,7 +35,7 @@ public interface MovementService {
      * @return
      * @throws ExceptionManager
      */
-    List<MovementReportResponse> findMovementByDateAndIdentification(String initialDate, String finalDate, String identification, String accountType) throws ExceptionManager;
+    List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
 
     /**
      * Find movement by account id
