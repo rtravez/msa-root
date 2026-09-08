@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         try {
             ResponseEntity<BaseResponseDto<UserResponse>> response = mscServices.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/users")
+                            .path("/api/users/identification")
                             .queryParam("identification", identification)
                             .build())
                     .retrieve()
