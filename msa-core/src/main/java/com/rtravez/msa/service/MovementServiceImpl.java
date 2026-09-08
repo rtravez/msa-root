@@ -69,6 +69,7 @@ public class MovementServiceImpl implements MovementService {
         movement.setCreatedHost(clientIpProvider.getCurrentIp());
         movement.setCreatedDate(DateUtil.currentDate());
         movement.setMovementDate(DateUtil.currentDate());
+        movement.setStatus(request.getStatus());
 
         return movement;
     }
