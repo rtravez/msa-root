@@ -1,5 +1,6 @@
 package com.rtravez.msa.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -25,6 +26,7 @@ public interface UserMapper {
      * @param entity the user view entity
      * @return the user response DTO
      */
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name", source = "person.name")
     @Mapping(target = "lastname", source = "person.lastname")
     @Mapping(target = "identification", source = "person.identification")
@@ -32,19 +34,8 @@ public interface UserMapper {
     @Mapping(target = "telephone", source = "person.telephone")
     @Mapping(target = "gender", source = "person.gender")
     @Mapping(target = "age", source = "person.age")
+    @Mapping(target = "personId", source = "person.personId")
+    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "username", source = "username")
     UserResponse toResponse(UserView entity);
-
-    /**
-     * Maps UserRequest to PersonView.
-     * Extracts only the person-related fields from the user request.
-     * The service layer is responsible for setting audit/metadata fields.
-     *
-     * @param request the user request DTO
-     * @return the person view with populated person fields
-     */
-    @Mapping(target = "personId", ignore = true)
-    @Mapping(target = "users", ignore = true)
-    @Mapping(target = "accounts", ignore = true)
-    PersonView toEntity(UserRequest request);
-
 }

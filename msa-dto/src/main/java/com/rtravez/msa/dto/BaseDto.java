@@ -1,5 +1,7 @@
 package com.rtravez.msa.dto;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,18 +9,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseDto implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public abstract class BaseDto {   
 
     @Size(max = 50)
     protected String createdHost;

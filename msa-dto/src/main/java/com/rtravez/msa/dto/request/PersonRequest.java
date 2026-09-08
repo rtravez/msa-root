@@ -1,20 +1,20 @@
 package com.rtravez.msa.dto.request;
 
 import com.rtravez.msa.dto.BaseDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import java.io.Serial;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PersonRequest extends BaseDto {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
     private Long personId;
     @NotBlank
     @Size(max = 10)

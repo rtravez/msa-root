@@ -49,10 +49,7 @@ public class MovementEntity extends BaseEntity {
     private BigDecimal movementValue;
 
     @Column(name = "available_balance", nullable = false, precision = 19, scale = 2)
-    private BigDecimal availableBalance;
-
-    @Column(name = "account_id", nullable = false)
-    private Long accountId;
+    private BigDecimal availableBalance;    
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "account_id", insertable = false, updatable = false)

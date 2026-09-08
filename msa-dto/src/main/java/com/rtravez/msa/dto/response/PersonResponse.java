@@ -3,11 +3,17 @@ package com.rtravez.msa.dto.response;
 import com.rtravez.msa.dto.BaseDto;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Data 
+@SuperBuilder 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@EqualsAndHashCode (callSuper = true)
 public class PersonResponse extends BaseDto {
 
     private Long personId;

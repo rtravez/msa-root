@@ -1,12 +1,16 @@
 package com.rtravez.msa.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
-@EqualsAndHashCode(callSuper = true)
+@Data 
+@SuperBuilder 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@EqualsAndHashCode (callSuper = true)
 public class UserResponse extends PersonResponse {
 
     private Long userId;

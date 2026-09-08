@@ -87,7 +87,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     public boolean findMovementByAccountId(Long accountId) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
-            where.and(movementEntity.accountId.eq(accountId));
+            where.and(movementEntity.account.accountId.eq(accountId));
 
             JPQLQuery<String> query = queryFactory.selectFrom(movementEntity)
                     .select(movementEntity.movementId.stringValue())

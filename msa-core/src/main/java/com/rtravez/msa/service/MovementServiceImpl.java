@@ -45,7 +45,7 @@ public class MovementServiceImpl implements MovementService {
      * @return
      */
     private BigDecimal getAvailableBalance(AccountEntity account) {
-        return movementRepository.findLastMovement(account).map(movement -> movement.getAvailableBalance())
+        return movementRepository.findLastMovement(account).map(MovementEntity::getAvailableBalance)
                 .orElse(BigDecimal.ZERO);
     }
 
@@ -64,8 +64,7 @@ public class MovementServiceImpl implements MovementService {
                 ? availableBalance.add(request.getMovementValue())
                 : availableBalance.subtract(request.getMovementValue().abs());
         movement.setAvailableBalance(newBalance);
-        movement.setAccount(null);
-        movement.setAccountId(account.getAccountId());
+        movement.setAccount(account);
         movement.setCreatedHost(clientIpProvider.getCurrentIp());
         movement.setCreatedDate(DateUtil.currentDate());
         movement.setMovementDate(DateUtil.currentDate());
@@ -83,7 +82,7 @@ public class MovementServiceImpl implements MovementService {
     private MovementResponse buildMomentResponse(MovementEntity movement) {
         return MovementResponse.builder()
                 .movementId(movement.getMovementId())
-                .accountId(movement.getAccountId())
+                .accountId(movement.getAccount().getAccountId())
                 .movementDate(movement.getMovementDate())
                 .movementType(movement.getMovementType())
                 .movementValue(movement.getMovementValue())
@@ -159,7 +158,7 @@ public class MovementServiceImpl implements MovementService {
 
             if (movement.isPresent()) {
                 MovementEntity movementEntity = movement.get();
-                if (movementRepository.hasLaterActiveMovement(movementEntity.getAccountId(), movementEntity.getMovementDate(),
+                if (movementRepository.hasLaterActiveMovement(movementEntity.getAccount().getAccountId(), movementEntity.getMovementDate(),
                         movementEntity.getMovementId())) {
                     throw new ExceptionManager.MovementDeletionException(
                             "No se puede eliminar un movimiento con movimientos posteriores");

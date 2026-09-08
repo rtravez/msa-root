@@ -2,13 +2,17 @@ package com.rtravez.msa.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
-@EqualsAndHashCode(callSuper = true)
+@Data 
+@SuperBuilder 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@EqualsAndHashCode (callSuper = true)
 public class UserRequest extends PersonRequest {
 
     private Long userId;

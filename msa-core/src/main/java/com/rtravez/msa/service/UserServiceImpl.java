@@ -15,6 +15,7 @@ import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.exception.ExceptionManager;
+import com.rtravez.msa.mapper.UserMapper;
 import com.rtravez.msa.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,27 +34,12 @@ public class UserServiceImpl implements UserService {
 
     private final RestClient mscServices;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public Optional<UserResponse> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(this::toUserResponse);
-    }
-
-    private UserResponse toUserResponse(UserView user) {
-        UserResponse response = UserResponse.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .build();
-        response.setPersonId(user.getPerson().getPersonId());
-        response.setIdentification(user.getPerson().getIdentification());
-        response.setName(user.getPerson().getName());
-        response.setLastname(user.getPerson().getLastname());
-        response.setAddress(user.getPerson().getAddress());
-        response.setTelephone(user.getPerson().getTelephone());
-        response.setGender(user.getPerson().getGender() == null ? null : user.getPerson().getGender().toString());
-        response.setAge(user.getPerson().getAge());
-        return response;
-    }
+        return userRepository.findByUsername(username).map(userMapper::toResponse);
+    }    
 
     @Override
     public UserResponse findUserByIdentification(String identification) throws ExceptionManager {
