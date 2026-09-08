@@ -98,7 +98,7 @@ public class AccountController {
     }
 
     /**
-     * Delete account
+     * Delete an account
      *
      * @param id
      * @return
