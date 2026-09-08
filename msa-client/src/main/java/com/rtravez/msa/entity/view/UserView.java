@@ -34,7 +34,7 @@ public class UserView extends BaseEntity {
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, unique = true, length = 20)
     private String username;
 
     @ManyToOne(fetch = FetchType.LAZY)
