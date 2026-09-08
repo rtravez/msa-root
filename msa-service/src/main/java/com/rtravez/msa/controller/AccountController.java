@@ -106,11 +106,11 @@ public class AccountController {
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "Delete account")
-    public ResponseEntity<BaseResponseDto<Object>> deleteById(@PathVariable Long id) {
+    public ResponseEntity<BaseResponseDto<Long>> deleteById(@PathVariable Long id) {
         if (this.accountService.deleteAccountById(id) >= 1) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Cuenta eliminada con \u00E9xito").build());
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Long>builder().code(HttpStatus.OK.value()).message("Cuenta eliminada con \u00E9xito").build());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<Long>builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
     }
 }
