@@ -24,14 +24,14 @@ public class ValidationController {
 	}
 
 	@GetMapping(path = "identification/{identification}")
-	public ResponseEntity<BaseResponseDto<Object>> validationIdentification(@PathVariable String identification) {
-		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value())
+	public ResponseEntity<BaseResponseDto<Boolean>> validationIdentification(@PathVariable String identification) {
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().code(HttpStatus.OK.value())
 				.data(service.validationIdentification(identification)).message("La identificación ha sido validado con \u00E9xito").build());
 	}
 
 	@GetMapping(path = "ruc/{ruc}")
-	public ResponseEntity<BaseResponseDto<Object>> validationRuc(@PathVariable String ruc) {
-		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(service.validationRuc(ruc))
+	public ResponseEntity<BaseResponseDto<Boolean>> validationRuc(@PathVariable String ruc) {
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().code(HttpStatus.OK.value()).data(service.validationRuc(ruc))
 				.message("El ruc ha sido validado con \u00E9xito").build());
 	}
 

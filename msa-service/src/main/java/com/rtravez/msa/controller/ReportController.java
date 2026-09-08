@@ -26,7 +26,6 @@ public class ReportController {
 
     private final MovementService movementService;
 
-
     /**
      * Find report movement
      *
