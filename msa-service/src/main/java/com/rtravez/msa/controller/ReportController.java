@@ -39,16 +39,16 @@ public class ReportController {
     @GetMapping
     @Secured({"ROLE_ADMIN"})
     @Operation(summary = "Find movements")
-    public ResponseEntity<BaseResponseDto<Object>> findMovementByDateAndIdentification(@RequestParam("initialDate") String initialDate,
+    public ResponseEntity<BaseResponseDto<List<MovementReportResponse>>> findMovementByDateAndIdentification(@RequestParam("initialDate") String initialDate,
                                                                                        @RequestParam("finalDate") String finalDate,
                                                                                        @RequestParam("identification") String identification,
                                                                                        @RequestParam("accountType") String accountType) {
         List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
         if (responses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("No existen movimientos").build());
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().code(HttpStatus.OK.value()).message("No existen movimientos").build());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(responses).message("Movimientos encontrados con \u00E9xito").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().code(HttpStatus.OK.value()).data(responses).message("Movimientos encontrados con \u00E9xito").build());
     }
 
 }

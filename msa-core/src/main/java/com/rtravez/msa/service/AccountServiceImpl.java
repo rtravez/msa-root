@@ -1,9 +1,10 @@
 package com.rtravez.msa.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
+import com.rtravez.msa.mapper.AccountMapper;
 import com.rtravez.msa.repository.AccountRepository;
 import com.rtravez.msa.service.common.DependenceService;
 import com.rtravez.msa.util.DateUtil;
@@ -37,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
     private final MovementService movementService;
     private final ClientIpProvider clientIpProvider;
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -159,27 +162,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> findAccountAll() throws ExceptionManager {
-        try {
-            List<AccountResponse> accountResponses = new ArrayList<>();
-            List<AccountEntity> accounts = accountRepository.findAll();
-            accounts.stream()
-            .filter(it -> Boolean.TRUE.equals(it.getStatus()))
-            .forEach(it -> accountResponses.add(AccountResponse.builder()
-                    .accountNumber(it.getAccountNumber())
-                    .accountType(it.getAccountType())
-                    .initialBalance(it.getInitialBalance())
-                    .status(it.getStatus())
-                    .accountId(it.getAccountId())
-                    .personId(it.getPersonId())
-                    .name(it.getPerson().getName())
-                    .lastname(it.getPerson().getLastname())
-                    .build()));
-            return accountResponses;
-        } catch (Exception e) {
-            log.error("findAccountAll: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar los registros");
-        }
+    @Transactional(readOnly = true)
+    public Page<AccountResponse> findAccountAll(Pageable pageable) throws ExceptionManager {
+        int pageSize = Math.min(pageable.getPageSize(), 100);
+        Pageable boundedPageable = PageRequest.of(pageable.getPageNumber(), pageSize);
+        return accountRepository.findAllByStatusTrue(boundedPageable).map(accountMapper::toResponse);
     }
 
     @Override
@@ -193,7 +180,8 @@ public class AccountServiceImpl implements AccountService {
             UserResponse userResponse = dependenceService.findUserByIdentification(userRequest);
 
             if (userResponse != null && userResponse.getUserId() != null) {
-                Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
+                Optional<AccountEntity> account = accountRepository
+                        .findAccountByAccountNumber(request.getAccountNumber());
 
                 return account.map(value -> this.updateAccount(value, userResponse, request)).orElse(null);
             }

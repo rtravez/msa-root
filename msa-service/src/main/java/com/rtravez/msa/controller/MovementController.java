@@ -34,12 +34,12 @@ public class MovementController {
     @Secured({"ROLE_ADMIN"})
     @PostMapping
     @Operation(summary = "Create movement")
-    public ResponseEntity<BaseResponseDto<Object>> save(@Valid @RequestBody MovementRequest request) {
+    public ResponseEntity<BaseResponseDto<MovementResponse>> save(@Valid @RequestBody MovementRequest request) {
         MovementResponse response = movementService.processSaveMovement(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.builder().code(HttpStatus.CREATED.value()).data(response).message("Movimiento creado con \u00E9xito").build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.<MovementResponse>builder().code(HttpStatus.CREATED.value()).data(response).message("Movimiento creado con \u00E9xito").build());
     }
 
     /**

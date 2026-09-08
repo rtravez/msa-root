@@ -1,9 +1,12 @@
 package com.rtravez.msa.repository;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-
-import java.util.Optional;
 
 /**
  * <b> Description de la class, interface o enumeration. </b>
@@ -24,9 +27,12 @@ public interface AccountRepository extends BaseRepository<AccountEntity, Long> {
 
     /**
      * Find account by account number
+     * 
      * @param accountNumber
      * @return Object
      * @throws ExceptionManager
      */
     Optional<AccountEntity> findAccountByAccountNumber(Long accountNumber) throws ExceptionManager;
+
+    Page<AccountEntity> findAllByStatusTrue(Pageable pageable) throws ExceptionManager;
 }

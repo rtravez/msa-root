@@ -5,12 +5,19 @@ import com.rtravez.msa.exception.ExceptionManager;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
@@ -69,6 +76,30 @@ public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Lon
         } catch (Exception e) {
             log.error("findAccountByAccountNumber: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
+        }
+    }
+
+    @Override
+    public Page<AccountEntity> findAllByStatusTrue(Pageable pageable) throws ExceptionManager {
+        try {
+            JPQLQuery<AccountEntity> contentQuery = queryFactory.selectFrom(accountEntity)
+                    .innerJoin(accountEntity.person, personView)
+                    .fetchJoin()
+                    .where(accountEntity.status.isTrue())
+                    .orderBy(accountEntity.accountId.asc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize());
+
+            List<AccountEntity> content = contentQuery.fetch();
+            Long total = queryFactory.select(accountEntity.accountId.count())
+                    .from(accountEntity)
+                    .where(accountEntity.status.isTrue())
+                    .fetchOne();
+
+            return new PageImpl<>(Objects.requireNonNull(content), pageable, total == null ? 0 : total);
+        } catch (Exception e) {
+            log.error("findAllByStatusTrue: ", e);
+            throw new ExceptionManager.FindingException("Error al buscar los registros");
         }
     }
 }

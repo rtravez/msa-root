@@ -1,14 +1,16 @@
 package com.rtravez.msa.service;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * <b> Description de la class, interface o enumeration. </b>
@@ -58,10 +60,11 @@ public interface AccountService {
     /**
      * Find account all
      *
+     * @param pageable
      * @return
      * @throws ExceptionManager
      */
-    List<AccountResponse> findAccountAll() throws ExceptionManager;
+    Page<AccountResponse> findAccountAll(Pageable pageable) throws ExceptionManager;
 
     /**
      * Process update account
