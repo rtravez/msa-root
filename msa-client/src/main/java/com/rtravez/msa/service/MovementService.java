@@ -44,7 +44,7 @@ public interface MovementService {
      * @return true or false
      * @throws ExceptionManager
      */
-    boolean findMovementByAccountId(Long accountId) throws ExceptionManager;
+    boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager;
 
     /**
      * Delete movement

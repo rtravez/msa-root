@@ -54,36 +54,35 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     }
 
     @Override
-    public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate,
-            String identification, String accountType) throws ExceptionManager {
+    public List<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate,
+                                                                   String identification, String accountType) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
-            where.and(personView.identification.eq(identification));
             where.and(movementEntity.movementDate.between(initialDate, finalDate));
             where.and(movementEntity.status.isTrue());
+
+            if (StringUtils.hasText(identification)) {
+                where.and(personView.identification.eq(identification));
+            }
 
             if (StringUtils.hasText(accountType)) {
                 where.and(accountEntity.accountType.eq(accountType));
             }
 
             return queryFactory.selectFrom(movementEntity)
-                    .select(bean(MovementReportResponse.class, movementEntity.movementDate, personView.identification,
-                            personView.name, personView.lastname, accountEntity.accountNumber,
-                            accountEntity.accountType,
-                            accountEntity.initialBalance, movementEntity.status, movementEntity.movementValue,
-                            movementEntity.availableBalance))
+                    .select(movementEntity)
                     .innerJoin(movementEntity.account, accountEntity)
                     .innerJoin(accountEntity.person, personView)
-                    .where(where).orderBy(movementEntity.movementDate.desc())
+                    .where(where).orderBy(personView.identification.asc(), accountEntity.accountType.asc(), movementEntity.movementDate.desc())
                     .fetch();
         } catch (Exception e) {
-            log.error("findMovementByDateAndIdentification: ", e);
+            log.error("findMovementByMovementDate: ", e);
             throw new ExceptionManager.FindingException("Error al buscar los registros");
         }
     }
 
     @Override
-    public boolean findMovementByAccountId(Long accountId) throws ExceptionManager {
+    public boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
             where.and(movementEntity.account.accountId.eq(accountId));
@@ -94,7 +93,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
                     .where(where);
             return org.apache.commons.lang3.StringUtils.isNotBlank(query.fetchFirst());
         } catch (ExceptionManager e) {
-            log.error("findMovementByAccountId: ", e);
+            log.error("findMovementByAccountAccountId: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
 

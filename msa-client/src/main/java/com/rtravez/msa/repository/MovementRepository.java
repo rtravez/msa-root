@@ -19,9 +19,9 @@ public interface MovementRepository extends BaseRepository<MovementEntity, Long>
 
     Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager;
 
-    List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
+    List<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
 
-    boolean findMovementByAccountId(Long accountId) throws ExceptionManager;
+    boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager;
 
     boolean hasLaterActiveMovement(Long accountId, LocalDateTime movementDate, Long movementId) throws ExceptionManager;
 }

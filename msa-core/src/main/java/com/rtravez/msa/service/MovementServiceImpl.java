@@ -133,7 +133,9 @@ public class MovementServiceImpl implements MovementService {
     public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate,
                                                                             String identification, String accountType) throws ExceptionManager {
         try {
-            return movementRepository.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
+            return movementRepository.findMovementByMovementDate(initialDate, finalDate, identification, accountType).stream()
+                    .map(movementMapper::toResponse)
+                    .toList();
         } catch (Exception e) {
             log.error("findMovementByDateAndIdentification: ", e);
             throw new ExceptionManager.FindingException("Error al buscar los registros");
@@ -142,11 +144,11 @@ public class MovementServiceImpl implements MovementService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean findMovementByAccountId(Long accountId) throws ExceptionManager {
+    public boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager {
         try {
-            return movementRepository.findMovementByAccountId(accountId);
+            return movementRepository.findMovementByAccountAccountId(accountId);
         } catch (Exception e) {
-            log.error("findMovementByAccountId: ", e);
+            log.error("findMovementByAccountAccountId: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
     }

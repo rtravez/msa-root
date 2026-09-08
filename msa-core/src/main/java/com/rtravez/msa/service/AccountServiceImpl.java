@@ -251,7 +251,7 @@ public class AccountServiceImpl implements AccountService {
      * @throws ExceptionManager.ForeignException
      */
     private void validateMovement(Long accountId) throws ExceptionManager.ForeignException {
-        if (movementService.findMovementByAccountId(accountId)) {
+        if (movementService.findMovementByAccountAccountId(accountId)) {
             throw new ExceptionManager.ForeignException("Existen movimientos para esta cuenta");
         }
     }
