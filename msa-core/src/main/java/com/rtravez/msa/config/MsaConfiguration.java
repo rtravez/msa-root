@@ -1,7 +1,12 @@
 package com.rtravez.msa.config;
 
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,12 +24,15 @@ import org.springframework.web.client.RestClient;
 public class MsaConfiguration {
 
     @Bean
-    public RestClient restClientMcpServices() {
+    public RestClient mscServices(@Value("${msc-service.base-url}") String baseUrl) {
         return RestClient.builder()
+                .baseUrl(Objects.requireNonNull(baseUrl))
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .requestInterceptor((request, body, execution) -> {
                     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                     if (authentication instanceof JwtAuthenticationToken jwtAuthentication) {
-                        request.getHeaders().setBearerAuth(jwtAuthentication.getToken().getTokenValue());
+                        request.getHeaders()
+                                .setBearerAuth(Objects.requireNonNull(jwtAuthentication.getToken().getTokenValue()));
                     }
                     return execution.execute(request, body);
                 })

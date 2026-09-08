@@ -17,7 +17,6 @@ import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.mapper.AccountMapper;
 import com.rtravez.msa.repository.AccountRepository;
-import com.rtravez.msa.service.common.DependenceService;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 
@@ -35,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final DependenceService dependenceService;
+    private final UserService userService;
     private final MovementService movementService;
     private final ClientIpProvider clientIpProvider;
     private final AccountRepository accountRepository;
@@ -92,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
     private UserResponse findUserResponse(String identification) throws ExceptionManager {
         UserRequest userRequest = UserRequest.builder().build();
         userRequest.setIdentification(identification);
-        return dependenceService.findUserByIdentification(userRequest);
+        return userService.findUserByIdentification(userRequest.getIdentification());
     }
 
     /**
@@ -177,7 +176,7 @@ public class AccountServiceImpl implements AccountService {
             userRequest.setIdentification(request.getIdentification());
 
             // Consumir servicio web externos
-            UserResponse userResponse = dependenceService.findUserByIdentification(userRequest);
+            UserResponse userResponse = userService.findUserByIdentification(userRequest.getIdentification());
 
             if (userResponse != null && userResponse.getUserId() != null) {
                 Optional<AccountEntity> account = accountRepository

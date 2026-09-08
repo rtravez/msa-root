@@ -22,4 +22,6 @@ public interface UserService {
      */
     Optional<UserResponse> findByUsername(String username) throws ExceptionManager;
 
+    UserResponse findUserByIdentification(String identification) throws ExceptionManager;
+
 }
