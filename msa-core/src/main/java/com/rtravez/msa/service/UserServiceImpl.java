@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final @Qualifier("mscServices") RestClient mscServices;
+    private final RestClient mscServices;
     private final UserRepository userRepository;
 
     @Override
