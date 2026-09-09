@@ -35,14 +35,17 @@ public class ReportController {
 
     private final MovementService movementService;
 
+
     /**
-     * Find report movement
+     * Retrieves a list of movements for a client within a specified date range and account type.
+     * This operation requires the user to have the `ADMIN` role.
      *
-     * @param initialDate
-     * @param finalDate
-     * @param identification
-     * @param accountType
-     * @return
+     * @param initialDate    The start date of the period to retrieve movements from. Must be provided in the format "yyyy-MM-ddTHH:mm:ss".
+     * @param finalDate      The end date of the period to retrieve movements until. Must be provided in the format "yyyy-MM-ddTHH:mm:ss".
+     * @param identification The identification number of the client whose movements are being queried.
+     * @param accountType    The type of account for which movements are being retrieved (e.g., "AHORROS").
+     * @return A {@code ResponseEntity} containing a {@code BaseResponseDto} with a list of {@code MovementReportResponse} objects.
+     * If no movements exist, the response includes a message indicating no movements were found.
      */
     @GetMapping
     @Secured({"ROLE_ADMIN"})
@@ -51,13 +54,13 @@ public class ReportController {
     @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
     @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<List<MovementReportResponse>>> findMovementByDateAndIdentification(
-            @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período, en formato ISO-8601", example = "2026-01-01", required = true)
+            @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período", example = "2026-09-01T00:00:00", required = true)
             @RequestParam("initialDate") LocalDateTime initialDate,
-            @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período, en formato ISO-8601", example = "2026-01-31", required = true)
+            @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período", example = "2026-09-30T23:59:59", required = true)
             @RequestParam("finalDate") LocalDateTime finalDate,
-            @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del cliente", example = "1710034065", required = true)
+            @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del cliente", example = "1710034065")
             @RequestParam("identification") String identification,
-            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS", required = true)
+            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS")
             @RequestParam("accountType") String accountType) {
         List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
         if (responses.isEmpty()) {
