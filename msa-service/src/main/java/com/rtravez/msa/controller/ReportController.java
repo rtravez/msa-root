@@ -35,7 +35,6 @@ public class ReportController {
 
     private final MovementService movementService;
 
-
     /**
      * Retrieves a list of movements for a client within a specified date range and account type.
      * This operation requires the user to have the `ADMIN` role.
