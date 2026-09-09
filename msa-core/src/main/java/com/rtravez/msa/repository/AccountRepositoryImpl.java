@@ -1,20 +1,17 @@
 package com.rtravez.msa.repository;
 
-import com.rtravez.msa.entity.AccountEntity;
-import com.rtravez.msa.exception.ExceptionManager;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
+import com.rtravez.msa.entity.AccountEntity;
+import com.rtravez.msa.exception.ExceptionManager;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PessimisticLockException;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,27 +49,18 @@ public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Lon
     @Override
     public Optional<AccountEntity> findAccountByAccountNumber(Long accountNumber) throws ExceptionManager {
         try {
-            /*
-             * BooleanBuilder where = new BooleanBuilder();
-             * where.and(accountEntity.accountNumber.eq(accountNumber));
-             * where.and(accountEntity.status.isTrue());
-             * 
-             * return Optional.ofNullable(queryFactory.selectFrom(accountEntity)
-             * .innerJoin(accountEntity.user, userView)
-             * .where(where).fetchFirst());
-             */
+            BooleanBuilder where = new BooleanBuilder();
+            where.and(accountEntity.accountNumber.eq(accountNumber));
+            where.and(accountEntity.status.isTrue());
 
-            String jpql = "SELECT a FROM " + AccountEntity.class.getName()
-                    + " a WHERE a.accountNumber = :accountNumber AND a.status = true";
-
-            TypedQuery<AccountEntity> query = entityManager.createQuery(jpql, AccountEntity.class);
-            query.setParameter("accountNumber", accountNumber);
-            query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
-
-            AccountEntity result = query.getSingleResult();
-            return Optional.ofNullable(result);
-        } catch (NoResultException e) {
-            return Optional.empty();
+            return Optional.ofNullable(queryFactory.selectFrom(accountEntity)
+                    .innerJoin(accountEntity.person, personView)
+                    .where(where)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .fetchOne());
+        } catch (PessimisticLockException e) {
+            log.error("findAccountByAccountNumber: registro bloqueado", e);
+            throw new ExceptionManager.FindingException("El registro está siendo modificado, intente de nuevo");
         } catch (Exception e) {
             log.error("findAccountByAccountNumber: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");

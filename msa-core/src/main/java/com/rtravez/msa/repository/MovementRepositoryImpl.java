@@ -1,28 +1,22 @@
 package com.rtravez.msa.repository;
 
-import com.rtravez.msa.dto.response.MovementReportResponse;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPQLQuery;
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.sql.SQLExpressions;
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
 import static com.rtravez.msa.entity.QMovementEntity.movementEntity;
 import static com.rtravez.msa.entity.view.QPersonView.personView;
-import static com.rtravez.msa.util.DateUtil.convertStringToDate;
-import static com.querydsl.core.types.Projections.bean;
 
 @Slf4j
 @Repository
@@ -35,18 +29,13 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     @Override
     public Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager {
         try {
-            String jpql = "SELECT m FROM " + MovementEntity.class.getName()
-                    + " m WHERE m.account.accountId = :accountId AND m.status = :status ORDER BY m.movementDate DESC";
+            BooleanBuilder where = new BooleanBuilder();
+            where.and(movementEntity.account.accountId.eq(account.getAccountId()));
+            where.and(movementEntity.status.isTrue());
 
-            TypedQuery<MovementEntity> query = entityManager.createQuery(jpql, MovementEntity.class);
-            query.setParameter("accountId", account.getAccountId());
-            query.setParameter("status", true);
-            query.setMaxResults(1);
-
-            MovementEntity result = query.getSingleResult();
-            return Optional.ofNullable(result);
-        } catch (NoResultException e) {
-            return Optional.empty();
+            return Optional.ofNullable(queryFactory.selectFrom(movementEntity)
+                    .where(where).orderBy(movementEntity.movementDate.desc())
+                    .fetchFirst());
         } catch (Exception e) {
             log.error("findLastMovement: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
@@ -103,16 +92,19 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     public boolean hasLaterActiveMovement(Long accountId, LocalDateTime movementDate, Long movementId)
             throws ExceptionManager {
         try {
-            String jpql = "SELECT COUNT(a) FROM " + MovementEntity.class.getName()
-                    + " a WHERE a.accountId = :accountId AND a.status = true"
-                    + " AND (a.movementDate > :movementDate"
-                    + " OR (a.movementDate = :movementDate AND a.movementId > :movementId))";
+            BooleanBuilder where = new BooleanBuilder();
+            where.and(movementEntity.account.accountId.eq(accountId));
+            where.and(movementEntity.status.isTrue());
+            where.and(movementEntity.movementDate.gt(movementDate)
+                    .or(movementEntity.movementDate.eq(movementDate)
+                            .and(movementEntity.movementId.gt(movementId))));
 
-            TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
-            query.setParameter("accountId", accountId);
-            query.setParameter("movementDate", movementDate);
-            query.setParameter("movementId", movementId);
-            return query.getSingleResult() > 0;
+            Long count = queryFactory
+                    .select(movementEntity.count())
+                    .from(movementEntity)
+                    .where(where)
+                    .fetchOne();
+            return count != null && count > 0;
         } catch (Exception e) {
             log.error("hasLaterActiveMovement: ", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
