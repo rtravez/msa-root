@@ -178,4 +178,9 @@ public class MovementServiceImpl implements MovementService {
             throw new ExceptionManager.DeletingException("Error al eliminar el registro");
         }
     }
+
+    @Override
+    public MovementResponse processUpdateMovement(Long id, MovementRequest request) throws ExceptionManager {
+        throw new UnsupportedOperationException("Unimplemented method 'processUpdateMovement'");
+    }
 }

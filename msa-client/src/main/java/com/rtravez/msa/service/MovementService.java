@@ -3,7 +3,9 @@ package com.rtravez.msa.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.request.MovementRequest;
+import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.MovementReportResponse;
 import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.exception.ExceptionManager;
@@ -24,6 +26,15 @@ public interface MovementService {
      * @throws ExceptionManager
      */
     MovementResponse processSaveMovement(MovementRequest request) throws ExceptionManager;
+
+    /**
+     * Process update movement
+     *
+     * @param request
+     * @return
+     * @throws ExceptionManager
+     */
+    MovementResponse processUpdateMovement(Long id, MovementRequest request) throws ExceptionManager;
 
     /**
      * Find report movement
