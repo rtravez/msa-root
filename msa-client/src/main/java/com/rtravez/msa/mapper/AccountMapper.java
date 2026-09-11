@@ -11,6 +11,11 @@ public interface AccountMapper {
 
     @Mapping(target = "name", source = "person.name")
     @Mapping(target = "lastname", source = "person.lastname")
+    @Mapping(target = "identification", source = "person.identification")
+    @Mapping(target = "address", source = "person.address")
+    @Mapping(target = "telephone", source = "person.telephone")
+    @Mapping(target = "gender", source = "person.gender")
+    @Mapping(target = "age", source = "person.age")
     @Mapping(target = "personId", source = "person.personId")
     AccountResponse toResponse(AccountEntity entity);
 

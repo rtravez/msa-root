@@ -174,17 +174,13 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountResponse processUpdateAccount(Long id, AccountRequest request) throws ExceptionManager {
         try {
-            UserRequest userRequest = UserRequest.builder().build();
-            userRequest.setIdentification(request.getIdentification());
-
             // Consumir servicio web externos
-            UserResponse userResponse = userService.findUserByIdentification(userRequest.getIdentification());
+            UserResponse response = userService.findUserByIdentification(request.getIdentification())
 
-            if (userResponse != null && userResponse.getUserId() != null) {
-                Optional<AccountEntity> account = accountRepository
-                        .findAccountByAccountNumber(request.getAccountNumber());
+            if (response != null && response.getUserId() != null) {
+                Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
 
-                return account.map(value -> this.updateAccount(value, userResponse, request)).orElse(null);
+                return account.map(value -> this.updateAccount(value, request)).orElse(null);
             }
             return null;
         } catch (Exception e) {
@@ -197,12 +193,10 @@ public class AccountServiceImpl implements AccountService {
      * Update account
      *
      * @param account
-     * @param userResponse
      * @param request
      * @return
      */
-    private AccountResponse updateAccount(AccountEntity account, UserResponse userResponse,
-            AccountRequest request) {
+    private AccountResponse updateAccount(AccountEntity account, AccountRequest request) {
         account.setAccountNumber(request.getAccountNumber());
         account.setAccountType(request.getAccountType());
         account.setInitialBalance(request.getInitialBalance());
@@ -213,27 +207,18 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
         this.processMovement(account);
 
-        return AccountResponse.builder()
-                .accountNumber(account.getAccountNumber())
-                .accountType(account.getAccountType())
-                .initialBalance(account.getInitialBalance())
-                .status(account.getStatus())
-                .name(userResponse.getName())
-                .lastname(userResponse.getLastname())
-                .accountId(account.getAccountId())
-                .personId(account.getPerson().getPersonId())
-                .build();
+        return accountMapper.toResponse(account);        
     }
 
     @Override
     @Transactional
     public Long deleteAccountById(Long id) throws ExceptionManager {
         try {
-            Optional<AccountEntity> account = accountRepository.findById(id);
+            Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
 
             if (account.isPresent()) {
                 validateMovement(account.get().getAccountId());
-                accountRepository.deleteById(account.get().getAccountId());
+                accountRepository.deleteById(Objects.requireNonNull(account.get().getAccountId()));
                 return 1L;
             }
             return 0L;
