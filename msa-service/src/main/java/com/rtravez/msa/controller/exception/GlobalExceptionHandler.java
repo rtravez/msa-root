@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
                 log.warn("Data integrity violation", ex);
                 return problem(HttpStatus.CONFLICT,
-                                "La cuenta ya existe o los datos violan una restricción de integridad");
+                                "Los datos violan una restricción de integridad");
         }
 
         @ExceptionHandler(Exception.class)
