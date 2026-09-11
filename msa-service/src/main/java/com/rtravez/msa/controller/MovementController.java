@@ -39,34 +39,30 @@ public class MovementController {
 
     private final MovementService movementService;
 
-
     /**
      * Save movement
      *
      * @param request
      * @return
      */
-    @Secured({"ROLE_ADMIN"})
+    @Secured({ "ROLE_ADMIN" })
     @PostMapping
     @Operation(summary = "Crear movimiento", description = "Registra un débito (`D`) o retiro (`R`) para una cuenta existente. El tipo debe coincidir con el signo del valor.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Movimiento creado correctamente"),
-            @ApiResponse(responseCode = "400", description = "Datos del movimiento inválidos", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class))),
-            @ApiResponse(responseCode = "402", description = "Saldo disponible insuficiente", content = @Content),
-            @ApiResponse(responseCode = "404", description = "La cuenta no existe", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content),
-            @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
-    })
+    @ApiResponse(responseCode = "201", description = "Movimiento creado correctamente")
+    @ApiResponse(responseCode = "400", description = "Datos del movimiento inválidos", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class)))
+    @ApiResponse(responseCode = "402", description = "Saldo disponible insuficiente", content = @Content)
+    @ApiResponse(responseCode = "404", description = "La cuenta no existe", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
+    @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<MovementResponse>> save(
-            @Valid @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del movimiento a registrar", required = true,
-                    content = @Content(examples = @ExampleObject(value = "{\"movementType\": \"D\", \"movementValue\": 100.00, \"accountNumber\": 478758}")))
-            MovementRequest request) {
+            @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del movimiento a registrar", required = true, content = @Content(examples = @ExampleObject(value = "{\"movementType\": \"D\", \"movementValue\": 100.00, \"accountNumber\": 478758}"))) MovementRequest request) {
         MovementResponse response = movementService.processSaveMovement(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder().status(HttpStatus.NOT_FOUND.value()).detail("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder()
+                    .status(HttpStatus.NOT_FOUND.value()).detail("La cuenta no existe").build());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.<MovementResponse>builder().status(HttpStatus.CREATED.value()).data(response).detail("Movimiento creado con \u00E9xito").build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.<MovementResponse>builder()
+                .status(HttpStatus.CREATED.value()).data(response).detail("Movimiento creado con \u00E9xito").build());
     }
 
     /**

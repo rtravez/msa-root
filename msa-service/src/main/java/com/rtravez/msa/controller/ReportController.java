@@ -43,7 +43,7 @@ public class ReportController {
      * @param finalDate      The end date of the period to retrieve movements until. Must be provided in the format "yyyy-MM-ddTHH:mm:ss".
      * @param identification The identification number of the client whose movements are being queried.
      * @param accountType    The type of account for which movements are being retrieved (e.g., "AHORROS").
-     * @return A {@code ResponseEntity} containing a {@code BaseResponseDto} with a list of {@code MovementReportResponse} objects.
+     * @return A {@link ResponseEntity} containing a {@link BaseResponseDto} with a list of {@link MovementReportResponse} objects.
      * If no movements exist, the response includes a message indicating no movements were found.
      */
     @GetMapping
