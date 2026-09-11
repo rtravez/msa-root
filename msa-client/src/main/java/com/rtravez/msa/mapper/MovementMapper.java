@@ -2,6 +2,7 @@ package com.rtravez.msa.mapper;
 
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.MovementReportResponse;
+import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.entity.MovementEntity;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -26,5 +27,6 @@ public interface MovementMapper {
     @Mapping(target = "identification", source = "account.person.identification")
     @Mapping(target = "lastname", source = "account.person.lastname")
     @Mapping(target = "name", source = "account.person.name")
-    MovementReportResponse toResponse(MovementEntity entity);
+    MovementReportResponse toReportResponse(MovementEntity entity);
+    MovementResponse toResponse(MovementEntity entity);
 }
