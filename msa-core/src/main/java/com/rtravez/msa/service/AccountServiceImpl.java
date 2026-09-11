@@ -175,7 +175,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse processUpdateAccount(Long id, AccountRequest request) throws ExceptionManager {
         try {
             // Consumir servicio web externos
-            UserResponse response = userService.findUserByIdentification(request.getIdentification())
+            UserResponse response = userService.findUserByIdentification(request.getIdentification());
 
             if (response != null && response.getUserId() != null) {
                 Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));

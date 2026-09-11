@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
             BaseResponseDto<UserResponse> body = response.getBody();
             return body != null ? body.getData() : null;
         } catch (HttpClientErrorException.NotFound e) {
-            return null;
+            throw new ExceptionManager.NotFoundException("El usuario con la identificación proporcionada no fue encontrado");
         } catch (ResourceAccessException e) {
             log.error("No fue posible conectar con el servicio de usuarios", e);
             throw new ExceptionManager.ServiceUnavailableException("El servicio de usuarios no está disponible");

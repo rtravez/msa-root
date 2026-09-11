@@ -23,25 +23,42 @@ import java.util.List;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ExceptionManager.ForeignException.class)
-        public ResponseEntity<ProblemDetail> handleForeignException(ExceptionManager.ForeignException ex) {
-        log.error("ForeignException: {}", ex.getMessage());
-                return problem(HttpStatus.CONFLICT, "Existen movimientos para esta cuenta");
-    }
+        @ExceptionHandler(ExceptionManager.class)
+        public ResponseEntity<ProblemDetail> handleExceptionManager(ExceptionManager ex) {
+                log.error("ExceptionManager error: ", ex);
+                HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    @ExceptionHandler(ExceptionManager.BalanceNotAvailableException.class)
+                if (ex instanceof ExceptionManager.NotFoundException) {
+                        status = HttpStatus.NOT_FOUND;
+                } else if (ex instanceof ExceptionManager.NotValidFieldException ||
+                                ex instanceof ExceptionManager.EmptyFieldException ||
+                                ex instanceof ExceptionManager.NotValidFormatException ||
+                                ex instanceof ExceptionManager.NullEntityException) {
+                        status = HttpStatus.BAD_REQUEST;
+                }
+
+                return problemDetail(status, ex.getMessage());
+        }
+
+        @ExceptionHandler(ExceptionManager.ForeignException.class)
+        public ResponseEntity<ProblemDetail> handleForeignException(ExceptionManager.ForeignException ex) {
+                log.error("ForeignException: {}", ex.getMessage());
+                return problem(HttpStatus.CONFLICT, "Existen movimientos para esta cuenta");
+        }
+
+        @ExceptionHandler(ExceptionManager.BalanceNotAvailableException.class)
         public ResponseEntity<ProblemDetail> handleBalanceNotAvailableException(
                         ExceptionManager.BalanceNotAvailableException ex) {
-        log.error("BalanceNotAvailableException: {}", ex.getMessage());
+                log.error("BalanceNotAvailableException: {}", ex.getMessage());
                 return problem(HttpStatus.PAYMENT_REQUIRED, "Saldo no disponible");
-    }
+        }
 
-    @ExceptionHandler(ExceptionManager.MovementDeletionException.class)
+        @ExceptionHandler(ExceptionManager.MovementDeletionException.class)
         public ResponseEntity<ProblemDetail> handleMovementDeletionException(
-            ExceptionManager.MovementDeletionException ex) {
-        log.warn("Movement deletion rejected: {}", ex.getMessage());
+                        ExceptionManager.MovementDeletionException ex) {
+                log.warn("Movement deletion rejected: {}", ex.getMessage());
                 return problem(HttpStatus.CONFLICT, "No se puede anular un movimiento con movimientos posteriores");
-    }
+        }
 
         @ExceptionHandler(ExceptionManager.ServiceUnavailableException.class)
         public ResponseEntity<ProblemDetail> handleServiceUnavailableException(
@@ -50,58 +67,59 @@ public class GlobalExceptionHandler {
                 return problem(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
         }
 
-    @ExceptionHandler(ExceptionManager.class)
-        public ResponseEntity<ProblemDetail> handleExceptionManager(ExceptionManager ex) {
-        log.error("ExceptionManager: {}", ex.getMessage(), ex);
-                return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al procesar la solicitud");
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+        @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ProblemDetail> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage()).toList();
-        log.error("Validation error: {}", errors);
+                List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+                                .map(err -> err.getField() + ": " + err.getDefaultMessage()).toList();
+                log.error("Validation error: {}", errors);
                 return problem(HttpStatus.BAD_REQUEST, "Error de validación", errors);
-    }
+        }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+        @ExceptionHandler(ConstraintViolationException.class)
         public ResponseEntity<ProblemDetail> handleConstraintViolationException(ConstraintViolationException ex) {
-        log.error("Constraint violation error: ", ex);
-        List<String> errors = ex.getConstraintViolations()
-                .stream()
-                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()).toList();
+                log.error("Constraint violation error: ", ex);
+                List<String> errors = ex.getConstraintViolations()
+                                .stream()
+                                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()).toList();
 
                 return problem(HttpStatus.BAD_REQUEST, "Error de validación de parámetros", errors);
-    }
+        }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+        @ExceptionHandler(DataIntegrityViolationException.class)
         public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        log.warn("Data integrity violation", ex);
-                return problem(HttpStatus.CONFLICT, "La cuenta ya existe o los datos violan una restricción de integridad");
-    }
+                log.warn("Data integrity violation", ex);
+                return problem(HttpStatus.CONFLICT,
+                                "La cuenta ya existe o los datos violan una restricción de integridad");
+        }
 
-    @ExceptionHandler(Exception.class)
+        @ExceptionHandler(Exception.class)
         public ResponseEntity<ProblemDetail> handleGenericException(Exception ex) {
-        log.error("Unexpected error: {}", ex.getMessage(), ex);
+                log.error("Unexpected error: {}", ex.getMessage(), ex);
                 return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado en el servidor");
-    }
+        }
 
-    @ExceptionHandler(AccessDeniedException.class)
+        @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ProblemDetail> handleAccessDeniedException(AccessDeniedException ex) {
-        log.warn("Access denied: {}", ex.getMessage());
+                log.warn("Access denied: {}", ex.getMessage());
                 return problem(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta operación");
         }
 
         private ResponseEntity<ProblemDetail> problem(HttpStatus status, String detail) {
-                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()), detail);
+                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()),
+                                detail);
                 problem.setTitle(status.getReasonPhrase());
                 return ResponseEntity.status(status).body(problem);
         }
 
         private ResponseEntity<ProblemDetail> problem(HttpStatus status, String detail, List<String> errors) {
-                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()), detail);
+                ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status.value()),
+                                detail);
                 problem.setTitle(status.getReasonPhrase());
                 problem.setProperty("errors", errors);
                 return ResponseEntity.status(status).body(problem);
-    }
+        }
+
+        private ResponseEntity<ProblemDetail> problemDetail(HttpStatus status, String detail) {
+                return ResponseEntity.status(status).body(ProblemDetail.forStatusAndDetail(status, detail));
+        }
 }
