@@ -173,20 +173,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public AccountResponse processUpdateAccount(Long id, AccountRequest request) throws ExceptionManager {
-        try {
-            // Consumir servicio web externos
-            UserResponse response = userService.findUserByIdentification(request.getIdentification());
+        // Consumir servicio web externos
+        UserResponse response = userService.findUserByIdentification(request.getIdentification());
 
-            if (response != null && response.getUserId() != null) {
-                Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
-
-                return account.map(value -> this.updateAccount(value, request)).orElse(null);
-            }
-            return null;
-        } catch (Exception e) {
-            log.error("processUpdateAccount", e);
-            throw new ExceptionManager.GettingException("Error al actualizar el registro");
+        if (response == null || response.getUserId() == null) {
+            throw new ExceptionManager.NotFoundException("El usuario no existe");
         }
+
+        Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
+        return account.map(value -> this.updateAccount(value, request))
+                .orElseThrow(() -> new ExceptionManager.NotFoundException("La cuenta no existe"));
     }
 
     /**

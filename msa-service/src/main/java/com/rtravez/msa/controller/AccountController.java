@@ -138,11 +138,6 @@ public class AccountController {
             @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos actualizados de la cuenta", required = true, content = @Content(examples = @ExampleObject(value = "{\"accountId\": 1, \"accountNumber\": 478758, \"accountType\": \"AHORROS\", \"initialBalance\": 1200.00, \"identification\": \"1710034065\"}")))
             AccountRequest request) {
         AccountResponse response = accountService.processUpdateAccount(id, request);
-        if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<AccountResponse>builder()
-                    .code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
-        }
-
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<AccountResponse>builder()
                 .code(HttpStatus.OK.value()).data(response).message("Cuenta actualizada con \u00E9xito").build());
     }
