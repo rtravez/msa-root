@@ -121,4 +121,13 @@ public class ExceptionManager extends RuntimeException {
 		}
 	}
 
+	public static class NotFoundException extends ExceptionManager {
+		@Serial
+        private static final long serialVersionUID = 1L;
+
+		public NotFoundException(String info) {
+			super(info);
+		}
+	}
+
 }

@@ -9,7 +9,6 @@ import com.rtravez.msa.dto.request.AccountRequest;
 import com.rtravez.msa.dto.request.MovementRequest;
 import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 
 /**
@@ -91,5 +90,8 @@ public interface AccountService {
      * @return Object
      * @throws ExceptionManager
      */
-    Optional<AccountEntity> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager;
+    Optional<AccountResponse> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager;
+
+    AccountResponse findAccountById(Long id) throws ExceptionManager;
+
 }

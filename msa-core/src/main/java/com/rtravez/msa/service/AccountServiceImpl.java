@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -117,7 +118,8 @@ public class AccountServiceImpl implements AccountService {
                 .accountNumber(request.getAccountNumber())
                 .accountType(request.getAccountType())
                 .initialBalance(request.getInitialBalance())
-                .person(personRepository.findById(userResponse.getPersonId()).orElseThrow(() -> new ExceptionManager("Person not found")))
+                .person(personRepository.findById(userResponse.getPersonId())
+                        .orElseThrow(() -> new ExceptionManager("Person not found")))
                 .build();
 
         account.setStatus(request.getStatus());
@@ -258,12 +260,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<AccountEntity> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager {
+    public Optional<AccountResponse> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager {
         try {
-            return accountRepository.findAccountByAccountNumber(request.getAccountNumber());
+            return accountRepository.findAccountByAccountNumber(request.getAccountNumber())
+                    .map(accountMapper::toResponse);
         } catch (Exception e) {
             log.error("findAccountByAccountNumber", e);
             throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AccountResponse findAccountById(Long id) throws ExceptionManager {
+        return accountRepository.findById(Objects.requireNonNull(id))
+                .filter(value -> Boolean.TRUE.equals(value.getStatus()))
+                .map(accountMapper::toResponse)
+                .orElseThrow(() -> new ExceptionManager.NotFoundException("La cuenta no existe"));
     }
 }

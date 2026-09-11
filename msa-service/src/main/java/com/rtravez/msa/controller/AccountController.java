@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -64,6 +65,18 @@ public class AccountController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Page<AccountResponse>>builder().code(HttpStatus.OK.value()).data(accountResponses).message("Cuentas encontradas con \u00E9xito").build());
+    }
+
+    @Secured({ "ROLE_ADMIN" })
+    @GetMapping(path = "/{id}")
+    @Operation(summary = "Buscar cuenta por id")
+    @ApiResponse(responseCode = "200", description = "Cuenta encontrada")
+    @ApiResponse(responseCode = "404", description = "Cuenta no encontrada")
+    @ApiResponse(responseCode = "401", description = "Token ausente o inválido")
+    @ApiResponse(responseCode = "403", description = "El token no tiene ROLE_ADMIN")
+    public ResponseEntity<BaseResponseDto<AccountResponse>> findAccountById(
+            @Parameter(description = "Identificador de la cuenta", required = true, example = "1") @PathVariable Long id) {
+        return getBaseResponseDtoResponseEntity(this.accountService.findAccountById(id));
     }
 
     /**
@@ -151,5 +164,15 @@ public class AccountController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<Long>builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
         }
+    }
+
+    @NonNull 
+    private ResponseEntity<BaseResponseDto<AccountResponse>> getBaseResponseDtoResponseEntity(AccountResponse response) {
+        if (response == null || response.getAccountId() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<AccountResponse>builder()
+                    .code(HttpStatus.NOT_FOUND.value()).message("Cuenta no encontrada").build());
+        }
+        return ResponseEntity.ok(BaseResponseDto.<AccountResponse>builder().code(HttpStatus.OK.value()).data(response)
+                .message("Cuenta encontrada con \u00E9xito").build());
     }
 }

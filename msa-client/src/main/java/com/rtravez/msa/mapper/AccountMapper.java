@@ -13,4 +13,5 @@ public interface AccountMapper {
     @Mapping(target = "lastname", source = "person.lastname")
     @Mapping(target = "personId", source = "person.personId")
     AccountResponse toResponse(AccountEntity entity);
+
 }
