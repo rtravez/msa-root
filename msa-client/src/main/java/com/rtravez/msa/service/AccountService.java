@@ -72,7 +72,7 @@ public interface AccountService {
      * @return
      * @throws ExceptionManager
      */
-    AccountResponse processUpdateAccount(AccountRequest request) throws ExceptionManager;
+    AccountResponse processUpdateAccount(Long id, AccountRequest request) throws ExceptionManager;
 
     /**
      * Delete account by id

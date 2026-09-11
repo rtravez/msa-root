@@ -172,7 +172,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public AccountResponse processUpdateAccount(AccountRequest request) throws ExceptionManager {
+    public AccountResponse processUpdateAccount(Long id, AccountRequest request) throws ExceptionManager {
         try {
             UserRequest userRequest = UserRequest.builder().build();
             userRequest.setIdentification(request.getIdentification());
