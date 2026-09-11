@@ -64,9 +64,9 @@ public class MovementController {
             MovementRequest request) {
         MovementResponse response = movementService.processSaveMovement(request);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder().code(HttpStatus.NOT_FOUND.value()).message("La cuenta no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder().status(HttpStatus.NOT_FOUND.value()).detail("La cuenta no existe").build());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.<MovementResponse>builder().code(HttpStatus.CREATED.value()).data(response).message("Movimiento creado con \u00E9xito").build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponseDto.<MovementResponse>builder().status(HttpStatus.CREATED.value()).data(response).detail("Movimiento creado con \u00E9xito").build());
     }
 
     /**
@@ -75,23 +75,22 @@ public class MovementController {
      * @param id
      * @return
      */
-    @Secured({"ROLE_ADMIN"})
+    @Secured({ "ROLE_ADMIN" })
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "Eliminar movimiento", description = "Anula un movimiento por su identificador. No se permite eliminar un movimiento que tenga movimientos posteriores.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Movimiento eliminado correctamente"),
-            @ApiResponse(responseCode = "404", description = "El movimiento no existe", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Existen movimientos posteriores", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content),
-            @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
-    })
+    @ApiResponse(responseCode = "200", description = "Movimiento eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "El movimiento no existe", content = @Content)
+    @ApiResponse(responseCode = "409", description = "Existen movimientos posteriores", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
+    @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<Object>> deleteById(
-            @Parameter(in = ParameterIn.PATH, description = "Identificador del movimiento", example = "1", required = true)
-            @PathVariable Long id) {
+            @Parameter(in = ParameterIn.PATH, description = "Identificador del movimiento", example = "1", required = true) @PathVariable Long id) {
         if (this.movementService.deleteMovementById(id) >= 1) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().code(HttpStatus.OK.value()).message("Movimiento eliminado con \u00E9xito").build());
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder().status(HttpStatus.OK.value())
+                    .detail("Movimiento eliminado con \u00E9xito").build());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder().code(HttpStatus.NOT_FOUND.value()).message("El movimiento no existe").build());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder()
+                    .status(HttpStatus.NOT_FOUND.value()).detail("El movimiento no existe").build());
         }
     }
 }

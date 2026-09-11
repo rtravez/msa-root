@@ -63,10 +63,10 @@ public class ReportController {
             @RequestParam("accountType") String accountType) {
         List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate, finalDate, identification, accountType);
         if (responses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().code(HttpStatus.OK.value()).message("No existen movimientos").build());
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().status(HttpStatus.OK.value()).detail("No existen movimientos").build());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().code(HttpStatus.OK.value()).data(responses).message("Movimientos encontrados con \u00E9xito").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder().status(HttpStatus.OK.value()).data(responses).detail("Movimientos encontrados con \u00E9xito").build());
     }
 
 }

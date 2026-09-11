@@ -40,8 +40,8 @@ public class ValidationController {
 	public ResponseEntity<BaseResponseDto<Boolean>> validationIdentification(
 			@Parameter(description = "Número de cédula que se desea validar", example = "1710034065", required = true)
 			@PathVariable String identification) {
-		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().code(HttpStatus.OK.value())
-				.data(service.validationIdentification(identification)).message("La identificación ha sido validado con \u00E9xito").build());
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().status(HttpStatus.OK.value())
+				.data(service.validationIdentification(identification)).detail("La identificación ha sido validado con \u00E9xito").build());
 	}
 
 	@GetMapping(path = "ruc/{ruc}")
@@ -54,8 +54,8 @@ public class ValidationController {
 	public ResponseEntity<BaseResponseDto<Boolean>> validationRuc(
 			@Parameter(description = "Número de RUC que se desea validar", example = "1790016919001", required = true)
 			@PathVariable String ruc) {
-		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().code(HttpStatus.OK.value()).data(service.validationRuc(ruc))
-				.message("El ruc ha sido validado con \u00E9xito").build());
+		return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Boolean>builder().status(HttpStatus.OK.value()).data(service.validationRuc(ruc))
+				.detail("El ruc ha sido validado con \u00E9xito").build());
 	}
 
 }
