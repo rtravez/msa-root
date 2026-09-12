@@ -30,19 +30,14 @@ public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Lon
 
     @Override
     public Boolean exist(Long accountNumber) throws ExceptionManager {
-        try {
-            BooleanBuilder where = new BooleanBuilder();
-            where.and(accountEntity.accountNumber.eq(accountNumber));
-            where.and(accountEntity.status.isTrue());
+        BooleanBuilder where = new BooleanBuilder();
+        where.and(accountEntity.accountNumber.eq(accountNumber));
+        where.and(accountEntity.status.isTrue());
 
-            JPQLQuery<Long> query = queryFactory.selectFrom(accountEntity).select(accountEntity.accountNumber)
-                    .innerJoin(accountEntity.person, personView)
-                    .where(where);
-            return query.fetchFirst() != null;
-        } catch (ExceptionManager e) {
-            log.error("exist: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar el registro");
-        }
+        JPQLQuery<Long> query = queryFactory.selectFrom(accountEntity).select(accountEntity.accountNumber)
+                .innerJoin(accountEntity.person, personView)
+                .where(where);
+        return query.fetchFirst() != null;
 
     }
 
@@ -61,33 +56,25 @@ public class AccountRepositoryImpl extends BaseRepositoryImpl<AccountEntity, Lon
         } catch (PessimisticLockException e) {
             log.error("findAccountByAccountNumber: registro bloqueado", e);
             throw new ExceptionManager.FindingException("El registro está siendo modificado, intente de nuevo");
-        } catch (Exception e) {
-            log.error("findAccountByAccountNumber: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar el registro");
         }
     }
 
     @Override
     public Page<AccountEntity> findAllByStatusTrue(Pageable pageable) throws ExceptionManager {
-        try {
-            JPQLQuery<AccountEntity> contentQuery = queryFactory.selectFrom(accountEntity)
-                    .innerJoin(accountEntity.person, personView)
-                    .fetchJoin()
-                    .where(accountEntity.status.isTrue())
-                    .orderBy(accountEntity.accountId.asc())
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize());
+        JPQLQuery<AccountEntity> contentQuery = queryFactory.selectFrom(accountEntity)
+                .innerJoin(accountEntity.person, personView)
+                .fetchJoin()
+                .where(accountEntity.status.isTrue())
+                .orderBy(accountEntity.accountId.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
-            List<AccountEntity> content = contentQuery.fetch();
-            Long total = queryFactory.select(accountEntity.accountId.count())
-                    .from(accountEntity)
-                    .where(accountEntity.status.isTrue())
-                    .fetchOne();
+        List<AccountEntity> content = contentQuery.fetch();
+        Long total = queryFactory.select(accountEntity.accountId.count())
+                .from(accountEntity)
+                .where(accountEntity.status.isTrue())
+                .fetchOne();
 
-            return new PageImpl<>(Objects.requireNonNull(content), pageable, total == null ? 0 : total);
-        } catch (Exception e) {
-            log.error("findAllByStatusTrue: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar los registros");
-        }
+        return new PageImpl<>(Objects.requireNonNull(content), pageable, total == null ? 0 : total);
     }
 }
