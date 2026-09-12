@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +25,6 @@ import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * <b> Description de la class, interface or enumeration. </b>
@@ -31,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
  * @version $1.0$
  */
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class MovementServiceImpl implements MovementService {
 
@@ -39,6 +40,23 @@ public class MovementServiceImpl implements MovementService {
     private final MovementRepository movementRepository;
     private final MovementMapper movementMapper;
     private final ClientIpProvider clientIpProvider;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MovementResponse> findMovementAll(Pageable pageable) throws ExceptionManager {
+        int pageSize = Math.min(pageable.getPageSize(), 100);
+        Pageable boundedPageable = PageRequest.of(pageable.getPageNumber(), pageSize, pageable.getSort());
+        return movementRepository.findAllByStatusTrue(boundedPageable).map(movementMapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MovementResponse findMovementById(Long id) throws ExceptionManager {
+        return movementRepository.findById(Objects.requireNonNull(id))
+                .filter(value -> Boolean.TRUE.equals(value.getStatus()))
+                .map(movementMapper::toResponse)
+                .orElseThrow(() -> new ExceptionManager.NotFoundException("El movimiento no existe"));
+    }
 
     /**
      * Find last movement
@@ -107,22 +125,14 @@ public class MovementServiceImpl implements MovementService {
     @Override
     @Transactional
     public MovementResponse processSaveMovement(MovementRequest request) throws ExceptionManager {
-        try {
-            Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
+        Optional<AccountEntity> account = accountRepository.findAccountByAccountNumber(request.getAccountNumber());
 
-            if (account.isPresent()) {
-                validateSufficientBalance(account.get(), request.getMovementValue());
-                MovementEntity movement = createMovement(request, account.get());
-                return movementMapper.toResponse(movementRepository.save(movement));
-            }
-            return null;
-        } catch (ExceptionManager.BalanceNotAvailableException e) {
-            log.error("processSaveMovement", e);
-            throw new ExceptionManager.BalanceNotAvailableException("Saldo no disponible");
-        } catch (ExceptionManager e) {
-            log.error("processSaveMovement", e);
-            throw new ExceptionManager.GettingException("Error al guardar el registro");
+        if (account.isPresent()) {
+            validateSufficientBalance(account.get(), request.getMovementValue());
+            MovementEntity movement = createMovement(request, account.get());
+            return movementMapper.toResponse(movementRepository.save(movement));
         }
+        return null;
     }
 
     @Override
@@ -130,53 +140,36 @@ public class MovementServiceImpl implements MovementService {
     public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate,
             LocalDateTime finalDate,
             String identification, String accountType) throws ExceptionManager {
-        try {
-            return movementRepository.findMovementByMovementDate(initialDate, finalDate, identification, accountType)
-                    .stream()
-                    .map(movementMapper::toReportResponse)
-                    .toList();
-        } catch (Exception e) {
-            log.error("findMovementByDateAndIdentification: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar los registros");
-        }
+        return movementRepository.findMovementByMovementDate(initialDate, finalDate, identification, accountType)
+                .stream()
+                .map(movementMapper::toReportResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager {
-        try {
-            return movementRepository.findMovementByAccountAccountId(accountId);
-        } catch (Exception e) {
-            log.error("findMovementByAccountAccountId: ", e);
-            throw new ExceptionManager.FindingException("Error al buscar el registro");
-        }
+        return movementRepository.findMovementByAccountAccountId(accountId);
     }
 
     @Override
     @Transactional
     public int deleteMovementById(Long id) throws ExceptionManager {
-        try {
-            Optional<MovementEntity> movement = movementRepository.findById(id);
+        Optional<MovementEntity> movement = movementRepository.findById(id);
 
-            if (movement.isPresent()) {
-                MovementEntity movementEntity = movement.get();
-                if (movementRepository.hasLaterActiveMovement(movementEntity.getAccount().getAccountId(),
-                        movementEntity.getMovementDate(),
-                        movementEntity.getMovementId())) {
-                    throw new ExceptionManager.MovementDeletionException(
-                            "No se puede eliminar un movimiento con movimientos posteriores");
-                }
-                movementEntity.setStatus(false);
-                movementRepository.save(movementEntity);
-                return 1;
+        if (movement.isPresent()) {
+            MovementEntity movementEntity = movement.get();
+            if (movementRepository.hasLaterActiveMovement(movementEntity.getAccount().getAccountId(),
+                    movementEntity.getMovementDate(),
+                    movementEntity.getMovementId())) {
+                throw new ExceptionManager.MovementDeletionException(
+                        "No se puede eliminar un movimiento con movimientos posteriores");
             }
-            return 0;
-        } catch (ExceptionManager.MovementDeletionException e) {
-            throw e;
-        } catch (ExceptionManager e) {
-            log.error("deleteMovementById", e);
-            throw new ExceptionManager.DeletingException("Error al eliminar el registro");
+            movementEntity.setStatus(false);
+            movementRepository.save(movementEntity);
+            return 1;
         }
+        return 0;
     }
 
     @Override

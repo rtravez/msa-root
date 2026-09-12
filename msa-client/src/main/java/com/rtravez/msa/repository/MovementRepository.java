@@ -1,13 +1,15 @@
 package com.rtravez.msa.repository;
 
-import com.rtravez.msa.dto.response.MovementReportResponse;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rtravez.msa.entity.AccountEntity;
 import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
-
-import java.util.List;
-import java.util.Optional;
-import java.time.LocalDateTime;
 
 /**
  * <b> Description de la class, interface o enumeration. </b>
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
  * @version $1.0$
  */
 public interface MovementRepository extends BaseRepository<MovementEntity, Long> {
+
+    Page<MovementEntity> findAllByStatusTrue(Pageable pageable) throws ExceptionManager;
 
     Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager;
 

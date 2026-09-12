@@ -3,9 +3,10 @@ package com.rtravez.msa.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.rtravez.msa.dto.request.AccountRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rtravez.msa.dto.request.MovementRequest;
-import com.rtravez.msa.dto.response.AccountResponse;
 import com.rtravez.msa.dto.response.MovementReportResponse;
 import com.rtravez.msa.dto.response.MovementResponse;
 import com.rtravez.msa.exception.ExceptionManager;
@@ -17,6 +18,10 @@ import com.rtravez.msa.exception.ExceptionManager;
  * @version $1.0$
  */
 public interface MovementService {
+
+    Page<MovementResponse> findMovementAll(Pageable pageable) throws ExceptionManager;
+
+    MovementResponse findMovementById(Long id) throws ExceptionManager;
 
     /**
      * Process save movement

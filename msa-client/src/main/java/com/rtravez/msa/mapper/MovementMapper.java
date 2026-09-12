@@ -28,5 +28,7 @@ public interface MovementMapper {
     @Mapping(target = "lastname", source = "account.person.lastname")
     @Mapping(target = "name", source = "account.person.name")
     MovementReportResponse toReportResponse(MovementEntity entity);
+
+    @Mapping(target = "accountId", source = "account.accountId")
     MovementResponse toResponse(MovementEntity entity);
 }

@@ -7,6 +7,9 @@ import com.rtravez.msa.entity.MovementEntity;
 import com.rtravez.msa.exception.ExceptionManager;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +27,24 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
 
     public MovementRepositoryImpl(EntityManager em) {
         super(MovementEntity.class, em);
+    }
+
+    @Override
+    public Page<MovementEntity> findAllByStatusTrue(Pageable pageable) throws ExceptionManager {
+        BooleanBuilder where = new BooleanBuilder();
+        where.and(movementEntity.status.isTrue());
+
+        List<MovementEntity> movements = queryFactory.selectFrom(movementEntity)
+                .where(where)
+                .orderBy(movementEntity.movementDate.desc(), movementEntity.movementId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long total = queryFactory.select(movementEntity.count())
+                .from(movementEntity)
+                .where(where)
+                .fetchOne();
+        return new PageImpl<>(movements, pageable, total);
     }
 
     @Override

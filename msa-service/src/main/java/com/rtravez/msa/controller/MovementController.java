@@ -1,31 +1,13 @@
 package com.rtravez.msa.controller;
 
-import com.rtravez.msa.dto.BaseResponseDto;
-import com.rtravez.msa.dto.request.AccountRequest;
-import com.rtravez.msa.dto.request.MovementRequest;
-import com.rtravez.msa.dto.response.AccountResponse;
-import com.rtravez.msa.dto.response.MovementReportResponse;
-import com.rtravez.msa.dto.response.MovementResponse;
-import com.rtravez.msa.service.MovementService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +20,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rtravez.msa.dto.BaseResponseDto;
+import com.rtravez.msa.dto.request.MovementRequest;
+import com.rtravez.msa.dto.response.MovementReportResponse;
+import com.rtravez.msa.dto.response.MovementResponse;
+import com.rtravez.msa.service.MovementService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @RestController()
 @RequestMapping("/api/movements")
 @Validated
@@ -48,6 +49,42 @@ import org.springframework.web.bind.annotation.RestController;
 public class MovementController {
 
     private final MovementService movementService;
+
+    @GetMapping
+    @Secured({ "ROLE_ADMIN" })
+    @Operation(summary = "Listar movimientos", description = "Obtiene los movimientos registrados de forma paginada. Requiere el rol `ADMIN`.")
+    @ApiResponse(responseCode = "200", description = "Consulta ejecutada correctamente, incluso si no existen movimientos")
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
+    @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
+    public ResponseEntity<BaseResponseDto<Page<MovementResponse>>> findMovementAll(
+            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 20 registros por página.") @PageableDefault(size = 20) Pageable pageable) {
+        Page<MovementResponse> movementResponses = movementService.findMovementAll(pageable);
+        if (movementResponses.isEmpty()) {
+            return ResponseEntity.ok(BaseResponseDto.<Page<MovementResponse>>builder()
+                    .status(HttpStatus.OK.value()).detail("No existen movimientos").build());
+        }
+
+        return ResponseEntity.ok(BaseResponseDto.<Page<MovementResponse>>builder().status(HttpStatus.OK.value())
+                .data(movementResponses).detail("Movimientos encontrados con \u00E9xito").build());
+    }
+
+    @GetMapping(path = "/{id}")
+    @Secured({ "ROLE_ADMIN" })
+    @Operation(summary = "Buscar movimiento por id")
+    @ApiResponse(responseCode = "200", description = "Movimiento encontrado")
+    @ApiResponse(responseCode = "404", description = "Movimiento no encontrado")
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
+    @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
+    public ResponseEntity<BaseResponseDto<MovementResponse>> findMovementById(
+            @Parameter(description = "Identificador del movimiento", required = true, example = "1") @PathVariable Long id) {
+        MovementResponse response = movementService.findMovementById(id);
+        if (response == null || response.getMovementId() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.<MovementResponse>builder()
+                    .status(HttpStatus.NOT_FOUND.value()).detail("Movimiento no encontrado").build());
+        }
+        return ResponseEntity.ok(BaseResponseDto.<MovementResponse>builder().status(HttpStatus.OK.value())
+                .data(response).detail("Movimiento encontrado con \u00E9xito").build());
+    }
 
     /**
      * Save movement
