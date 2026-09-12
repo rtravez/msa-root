@@ -2,7 +2,6 @@ package com.rtravez.msa.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import org.springframework.web.client.RestClientException;
 
 import com.rtravez.msa.dto.BaseResponseDto;
 import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.entity.view.UserView;
 import com.rtravez.msa.exception.ExceptionManager;
 import com.rtravez.msa.mapper.UserMapper;
 import com.rtravez.msa.repository.UserRepository;
