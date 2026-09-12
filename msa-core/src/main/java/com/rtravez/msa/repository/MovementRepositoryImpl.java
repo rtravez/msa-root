@@ -70,14 +70,8 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
             BooleanBuilder where = new BooleanBuilder();
             where.and(movementEntity.movementDate.between(initialDate, finalDate));
             where.and(movementEntity.status.isTrue());
-
-            if (StringUtils.hasText(identification)) {
-                where.and(personView.identification.eq(identification));
-            }
-
-            if (StringUtils.hasText(accountType)) {
-                where.and(accountEntity.accountType.eq(accountType));
-            }
+            where.and(personView.identification.eq(identification));
+            where.and(accountEntity.accountType.eq(accountType));
 
             List<MovementEntity> movements = queryFactory.selectFrom(movementEntity)
                     .select(movementEntity)
