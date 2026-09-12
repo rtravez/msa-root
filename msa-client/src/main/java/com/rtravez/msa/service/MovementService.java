@@ -1,7 +1,6 @@
 package com.rtravez.msa.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +50,9 @@ public interface MovementService {
      * @return
      * @throws ExceptionManager
      */
-    List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
+        Page<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate,
+            LocalDateTime finalDate, String identification, String accountType, Pageable pageable)
+            throws ExceptionManager;
 
     /**
      * Find movement by account id

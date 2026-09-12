@@ -137,13 +137,13 @@ public class MovementServiceImpl implements MovementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate,
-            LocalDateTime finalDate,
-            String identification, String accountType) throws ExceptionManager {
-        return movementRepository.findMovementByMovementDate(initialDate, finalDate, identification, accountType)
-                .stream()
-                .map(movementMapper::toReportResponse)
-                .toList();
+        public Page<MovementReportResponse> findMovementByDateAndIdentification(LocalDateTime initialDate,
+            LocalDateTime finalDate, String identification, String accountType, Pageable pageable)
+            throws ExceptionManager {
+        int pageSize = Math.min(pageable.getPageSize(), 100);
+        Pageable boundedPageable = PageRequest.of(pageable.getPageNumber(), pageSize, pageable.getSort());
+        return movementRepository.findMovementByMovementDate(initialDate, finalDate, identification, accountType,
+            boundedPageable).map(movementMapper::toReportResponse);
     }
 
     @Override

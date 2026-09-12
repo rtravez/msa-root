@@ -1,8 +1,6 @@
 package com.rtravez.msa.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
@@ -186,20 +184,21 @@ public class MovementController {
     @ApiResponse(responseCode = "200", description = "Consulta ejecutada correctamente, incluso si no hay movimientos")
     @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
     @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
-    public ResponseEntity<BaseResponseDto<List<MovementReportResponse>>> findMovementByDateAndIdentification(
+    public ResponseEntity<BaseResponseDto<Page<MovementReportResponse>>> findMovementByDateAndIdentification(
             @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período", example = "2026-09-01T00:00:00", required = true) @RequestParam("initialDate") LocalDateTime initialDate,
             @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período", example = "2026-09-30T23:59:59", required = true) @RequestParam("finalDate") LocalDateTime finalDate,
             @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del usuario", example = "1710034065") @RequestParam("identification") String identification,
-            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS") @RequestParam("accountType") String accountType) {
-        List<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate,
-                finalDate, identification, accountType);
+            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS") @RequestParam("accountType") String accountType,
+            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 20 registros por página.") @PageableDefault(size = 20) Pageable pageable) {
+        Page<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate,
+                finalDate, identification, accountType, pageable);
         if (responses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<List<MovementReportResponse>>builder()
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Page<MovementReportResponse>>builder()
                     .status(HttpStatus.OK.value()).detail("No existen movimientos").build());
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(BaseResponseDto.<List<MovementReportResponse>>builder().status(HttpStatus.OK.value())
+                .body(BaseResponseDto.<Page<MovementReportResponse>>builder().status(HttpStatus.OK.value())
                         .data(responses).detail("Movimientos encontrados con \u00E9xito").build());
     }
 }

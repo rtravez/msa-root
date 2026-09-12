@@ -23,7 +23,8 @@ public interface MovementRepository extends BaseRepository<MovementEntity, Long>
 
     Optional<MovementEntity> findLastMovement(AccountEntity account) throws ExceptionManager;
 
-    List<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate, String identification, String accountType) throws ExceptionManager;
+    Page<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate,
+            String identification, String accountType, Pageable pageable) throws ExceptionManager;
 
     boolean findMovementByAccountAccountId(Long accountId) throws ExceptionManager;
 

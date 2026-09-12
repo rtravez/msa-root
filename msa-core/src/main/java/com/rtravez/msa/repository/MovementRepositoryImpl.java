@@ -64,8 +64,8 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
     }
 
     @Override
-    public List<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate,
-                                                                   String identification, String accountType) throws ExceptionManager {
+    public Page<MovementEntity> findMovementByMovementDate(LocalDateTime initialDate, LocalDateTime finalDate,
+            String identification, String accountType, Pageable pageable) throws ExceptionManager {
         try {
             BooleanBuilder where = new BooleanBuilder();
             where.and(movementEntity.movementDate.between(initialDate, finalDate));
@@ -79,12 +79,24 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
                 where.and(accountEntity.accountType.eq(accountType));
             }
 
-            return queryFactory.selectFrom(movementEntity)
+            List<MovementEntity> movements = queryFactory.selectFrom(movementEntity)
                     .select(movementEntity)
                     .innerJoin(movementEntity.account, accountEntity)
                     .innerJoin(accountEntity.person, personView)
-                    .where(where).orderBy(personView.identification.asc(), accountEntity.accountType.asc(), movementEntity.movementDate.desc())
+                    .where(where)
+                    .orderBy(personView.identification.asc(), accountEntity.accountType.asc(),
+                            movementEntity.movementDate.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                     .fetch();
+
+            Long total = queryFactory.select(movementEntity.count())
+                    .from(movementEntity)
+                    .innerJoin(movementEntity.account, accountEntity)
+                    .innerJoin(accountEntity.person, personView)
+                    .where(where)
+                    .fetchOne();
+            return new PageImpl<>(movements, pageable, total == null ? 0 : total);
         } catch (Exception e) {
             log.error("findMovementByMovementDate: ", e);
             throw new ExceptionManager.FindingException("Error al buscar los registros");
