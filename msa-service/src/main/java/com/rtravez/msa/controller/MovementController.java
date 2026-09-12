@@ -55,7 +55,7 @@ public class MovementController {
     @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
     @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<Page<MovementResponse>>> findMovementAll(
-            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 20 registros por página.") @PageableDefault(size = 20) Pageable pageable) {
+            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 10 registros por página.") @PageableDefault(size = 10) Pageable pageable) {
         Page<MovementResponse> movementResponses = movementService.findMovementAll(pageable);
         if (movementResponses.isEmpty()) {
             return ResponseEntity.ok(BaseResponseDto.<Page<MovementResponse>>builder()
@@ -187,9 +187,9 @@ public class MovementController {
     public ResponseEntity<BaseResponseDto<Page<MovementReportResponse>>> findMovementByDateAndIdentification(
             @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período", example = "2026-09-01T00:00:00", required = true) @RequestParam("initialDate") LocalDateTime initialDate,
             @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período", example = "2026-09-30T23:59:59", required = true) @RequestParam("finalDate") LocalDateTime finalDate,
-            @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del usuario", example = "1710034065") @RequestParam("identification") String identification,
-            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS") @RequestParam("accountType") String accountType,
-            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 20 registros por página.") @PageableDefault(size = 20) Pageable pageable) {
+            @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del usuario", example = "1710034065", required = true) @RequestParam("identification") String identification,
+            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS", required = true) @RequestParam("accountType") String accountType,
+            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 10 registros por página.") @PageableDefault(size = 10) Pageable pageable) {
         Page<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate,
                 finalDate, identification, accountType, pageable);
         if (responses.isEmpty()) {

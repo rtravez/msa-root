@@ -57,7 +57,7 @@ public class AccountController {
     @ApiResponse(responseCode = "401", description = "Token JWT ausente o inválido", content = @Content)
     @ApiResponse(responseCode = "403", description = "El usuario no posee el rol ADMIN", content = @Content)
     public ResponseEntity<BaseResponseDto<Page<AccountResponse>>> findAccountAll(
-            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 20 registros por página.") @PageableDefault(size = 20) Pageable pageable) {
+            @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 10 registros por página.") @PageableDefault(size = 10) Pageable pageable) {
         Page<AccountResponse> accountResponses = accountService.findAccountAll(pageable);
         if (accountResponses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.<Page<AccountResponse>>builder()
