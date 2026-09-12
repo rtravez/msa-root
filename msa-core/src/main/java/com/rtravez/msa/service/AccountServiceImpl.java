@@ -13,7 +13,6 @@ import com.rtravez.msa.repository.PersonRepository;
 import com.rtravez.msa.util.DateUtil;
 import com.rtravez.msa.web.ClientIpProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,6 @@ import java.util.Optional;
  * @version $1.0$
  */
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
@@ -44,12 +42,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public Boolean exist(Long accountNumber) throws ExceptionManager {
-        try {
-            return accountRepository.exist(accountNumber);
-        } catch (ExceptionManager e) {
-            log.error("exist", e);
-            throw new ExceptionManager.FindingException("Error al buscar el registro");
-        }
+        return accountRepository.exist(accountNumber);
     }
 
     @Override
@@ -68,18 +61,13 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountResponse processSaveAccount(AccountRequest request, UserResponse userResponse)
             throws ExceptionManager {
-        try {
-            if (isUserResponseValid(userResponse)) {
-                AccountEntity account = createAccountEntity(request, userResponse);
-                accountRepository.save(account);
-                processMovement(account);
-                return buildAccountResponse(account, userResponse);
-            }
-            return null;
-        } catch (Exception e) {
-            log.error("processSaveAccount", e);
-            throw new ExceptionManager.GettingException("Error al guardar el registro");
+        if (isUserResponseValid(userResponse)) {
+            AccountEntity account = createAccountEntity(request, userResponse);
+            accountRepository.save(account);
+            processMovement(account);
+            return buildAccountResponse(account, userResponse);
         }
+        return null;
     }
 
     /**
@@ -209,22 +197,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public Long deleteAccountById(Long id) throws ExceptionManager {
-        try {
-            Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
+        Optional<AccountEntity> account = accountRepository.findById(Objects.requireNonNull(id));
 
-            if (account.isPresent()) {
-                validateMovement(account.get().getAccountId());
-                accountRepository.deleteById(Objects.requireNonNull(account.get().getAccountId()));
-                return 1L;
-            }
-            return 0L;
-        } catch (ExceptionManager.ForeignException e) {
-            log.error("deleteAccountById", e);
-            throw new ExceptionManager.ForeignException("Existen movimientos para esta cuenta");
-        } catch (ExceptionManager e) {
-            log.error("deleteAccountById", e);
-            throw new ExceptionManager.GettingException("Error al eliminar el registro");
+        if (account.isPresent()) {
+            validateMovement(account.get().getAccountId());
+            accountRepository.deleteById(Objects.requireNonNull(account.get().getAccountId()));
+            return 1L;
         }
+        return 0L;
     }
 
     /**
@@ -242,13 +222,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public Optional<AccountResponse> findAccountByAccountNumber(MovementRequest request) throws ExceptionManager {
-        try {
-            return accountRepository.findAccountByAccountNumber(request.getAccountNumber())
-                    .map(accountMapper::toResponse);
-        } catch (Exception e) {
-            log.error("findAccountByAccountNumber", e);
-            throw new ExceptionManager.FindingException("Error al buscar el registro");
-        }
+        return accountRepository.findAccountByAccountNumber(request.getAccountNumber())
+                .map(accountMapper::toResponse);
     }
 
     @Override
