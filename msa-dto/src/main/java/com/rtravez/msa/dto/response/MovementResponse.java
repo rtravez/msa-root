@@ -30,4 +30,6 @@ public class MovementResponse implements Serializable {
     private BigDecimal availableBalance;
     @NotNull
     private Long accountId;
+    @NotNull
+    private Long accountNumber;
 }

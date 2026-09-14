@@ -30,5 +30,6 @@ public interface MovementMapper {
     MovementReportResponse toReportResponse(MovementEntity entity);
 
     @Mapping(target = "accountId", source = "account.accountId")
+    @Mapping(target = "accountNumber", source = "account.accountNumber")
     MovementResponse toResponse(MovementEntity entity);
 }

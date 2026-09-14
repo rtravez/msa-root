@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.rtravez.msa.entity.QAccountEntity.accountEntity;
@@ -41,7 +42,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
                 .from(movementEntity)
                 .where(where)
                 .fetchOne();
-        return new PageImpl<>(movements, pageable, total);
+        return new PageImpl<>(Objects.requireNonNull(movements), pageable, total);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
             .innerJoin(accountEntity.person, personView)
             .where(where)
             .fetchOne();
-        return new PageImpl<>(movements, pageable, total == null ? 0 : total);
+        return new PageImpl<>(Objects.requireNonNull(movements), pageable, total == null ? 0 : total);
     }
 
     @Override
