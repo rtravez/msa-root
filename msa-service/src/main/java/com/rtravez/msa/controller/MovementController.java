@@ -188,7 +188,7 @@ public class MovementController {
             @Parameter(in = ParameterIn.QUERY, description = "Fecha inicial del período", example = "2026-09-01T00:00:00", required = true) @RequestParam("initialDate") LocalDateTime initialDate,
             @Parameter(in = ParameterIn.QUERY, description = "Fecha final del período", example = "2026-09-30T23:59:59", required = true) @RequestParam("finalDate") LocalDateTime finalDate,
             @Parameter(in = ParameterIn.QUERY, description = "Número de identificación del usuario", example = "1710034065", required = true) @RequestParam("identification") String identification,
-            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS", required = true) @RequestParam("accountType") String accountType,
+            @Parameter(in = ParameterIn.QUERY, description = "Tipo de cuenta", example = "AHORROS", required = false) @RequestParam("accountType") String accountType,
             @Parameter(description = "Paginación y ordenamiento. Por defecto devuelve 10 registros por página.") @PageableDefault(size = 10) Pageable pageable) {
         Page<MovementReportResponse> responses = movementService.findMovementByDateAndIdentification(initialDate,
                 finalDate, identification, accountType, pageable);
