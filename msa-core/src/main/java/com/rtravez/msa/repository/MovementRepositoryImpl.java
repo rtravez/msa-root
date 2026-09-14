@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,7 +64,11 @@ public class MovementRepositoryImpl extends BaseRepositoryImpl<MovementEntity, L
         where.and(movementEntity.movementDate.between(initialDate, finalDate));
         where.and(movementEntity.status.isTrue());
         where.and(personView.identification.eq(identification));
-        where.and(accountEntity.accountType.eq(accountType));
+
+
+        if (StringUtils.hasText(accountType)) {
+            where.and(accountEntity.accountType.eq(accountType));
+        }
 
         List<MovementEntity> movements = queryFactory.selectFrom(movementEntity)
             .select(movementEntity)
