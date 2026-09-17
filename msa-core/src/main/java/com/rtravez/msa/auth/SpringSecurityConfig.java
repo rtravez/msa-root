@@ -1,9 +1,10 @@
 package com.rtravez.msa.auth;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,33 +72,43 @@ public class SpringSecurityConfig {
 
 	private Converter<Jwt, Collection<GrantedAuthority>> keycloakAuthoritiesConverter() {
 		return jwt -> {
-			List<GrantedAuthority> authorities = new ArrayList<>();
-			addRoles(authorities, jwt.getClaimAsMap("realm_access"));
-
 			Map<String, Object> resourceAccess = jwt.getClaimAsMap("resource_access");
-			if (resourceAccess != null) {
-				addRoles(authorities, asMap(resourceAccess.get(KEYCLOAK_CLIENT_ID)));
-			}
-			return authorities;
+			Map<String, Object> clientAccess = resourceAccess == null
+					? null
+					: asMap(resourceAccess.get(KEYCLOAK_CLIENT_ID));
+
+			return Stream.concat(
+					roleNames(jwt.getClaimAsMap("realm_access")),
+					roleNames(clientAccess))
+					.map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+					.map(SimpleGrantedAuthority::new)
+					.map(GrantedAuthority.class::cast)
+					.toList();
 		};
 	}
 
-	private void addRoles(List<GrantedAuthority> authorities, Map<String, Object> access) {
+	private Stream<String> roleNames(Map<String, Object> access) {
 		if (access == null || !(access.get("roles") instanceof Collection<?> roles)) {
-			return;
+			return Stream.empty();
 		}
 
-		roles.stream()
+		return roles.stream()
 				.filter(String.class::isInstance)
-				.map(String.class::cast)
-				.map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
-				.map(SimpleGrantedAuthority::new)
-				.forEach(authorities::add);
+				.map(String.class::cast);
 	}
 
-	@SuppressWarnings("unchecked")
 	private Map<String, Object> asMap(Object value) {
-		return value instanceof Map<?, ?> map ? (Map<String, Object>) map : null;
+		if (!(value instanceof Map<?, ?> map)) {
+			return Map.of();
+		}
+
+		Map<String, Object> typedMap = new HashMap<>();
+		map.forEach((key, entryValue) -> {
+			if (key instanceof String stringKey) {
+				typedMap.put(stringKey, entryValue);
+			}
+		});
+		return typedMap;
 	}
 
 	@Bean
