@@ -4,9 +4,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.rtravez.msa.dto.request.UserRequest;
 import com.rtravez.msa.dto.response.UserResponse;
-import com.rtravez.msa.entity.view.PersonView;
 import com.rtravez.msa.entity.view.UserView;
 
 /**
